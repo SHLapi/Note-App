@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Note App">
+    <meta name="keywords" content="notes">
+    <meta name="author" content="Abdullah Shalabi">
+    <title>Note App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  </head>
+  <body>
+
+    <header>
+      <h1>Note App</h1>
+      <div class="Header-btn">
+        <button class="addNoteBtn"> + Add Note </button>
+        <button class="themeToggleBtn"> 🌑 </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="notesGrid">
+        <!-- Notes goes Here..  -->
+        <div class="noteCard">
+          <h4 class="noteTitle">Hello</h4>
+          <p class="noteContent"></p>
+          <div class="noteActions">
+            <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+            <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+      <dialog id="noteDialog">
+        <div class="dialogHeader">
+          <h2>Add Note</h2>
+          <button type="button"><i class="fa fa-times"></i></button>
+        </div>
+        <form class="noteForm">
+          <div class="formInput">
+            <label for="noteTitle" class="formLabel">Title</label>
+            <input type="text" id="noteTitle" class="formInput" placeholder="Enter a Title"/>
+          </div>
+          <div class="formInput">
+            <label for="noteContent" class="formLabel">Content</label>
+            <textarea id="noteContent" class="formTextarea" placeholder="Write Your Note .."/>
+          </div>
+          <div class="dialogAction">
+            <button type="button" class="cancelBtn">Cancel</button>
+            <button type="submit" class="saveBtn">Add Note</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+  </body>
+</html>
