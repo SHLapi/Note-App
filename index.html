@@ -9,45 +9,27 @@
     <title>Note App</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <script src="/app.js" defer ></script>
+    <script src="/app.js" defer></script>
   </head>
   <body>
     <header>
       <h1>Note App</h1>
       <div class="Header-btn">
         <button type="button" class="addNoteBtn" onclick="openDialog()"> + Add Note </button>
-        <button type="button" class="themeToggleBtn"> 🌑 </button>
+        <button type="button" class="themeToggleBtn" onclick="Theme()">🌓</button>
       </div>
     </header>
 
     <main>
       <div class="notesGrid">
         <!-- Notes goes Here..  -->
-        <div class="noteCard">
-          <h4 class="noteTitle">Hello</h4>
-          <p class="noteContent">this is content </p>
-          <div class="noteActions">
-            <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-            <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
-          </div>
-        </div>
-
-        <div class="noteCard">
-          <h4 class="noteTitle">Hello</h4>
-          <p class="noteContent"></p>
-          <div class="noteActions">
-            <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-            <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
-          </div>
-        </div>
-        <!-- remove to here -->
       </div>
       <dialog id="noteDialog">
         <div class="dialogHeader">
           <h2>Add Note</h2>
-          <button type="button" class="closeDialogBtn"><i class="fa fa-times"></i></button>
-        </div>
-        <form class="noteForm">
+          <button type="button" class="closeDialogBtn" onclick="closeDialog()"><i class="fa fa-times"></i></button>
+        </div>  
+        <form id="noteForm">
           <div class="formInput">
             <label for="noteTitle" class="formLabel">Title</label>
             <input type="text" id="noteTitle" class="formTitleInput" placeholder="Enter a Title" autofocus/>
@@ -57,7 +39,7 @@
             <textarea id="noteContent" class="formTextarea" placeholder="Write Your Note .."></textarea> 
           </div>
           <div class="dialogAction">
-            <button type="button" class="cancelBtn">Cancel</button>
+            <button type="button" class="cancelBtn" onclick="closeDialog()">Cancel</button>
             <button type="submit" class="saveNoteBtn">Save Note</button>
           </div>
         </form>

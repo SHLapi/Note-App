@@ -11,7 +11,7 @@
   --transparent-10: rgba(247, 247, 247, 1);
   --border-radius: 1rem ;
 }
-.dark-theme{
+.darkTheme{
   --primary-color:#4a6ed1;
   --secondary-color: #1e1f26;
   --accent-color:#2c2f38;
@@ -64,6 +64,8 @@ input, textarea{
   background: var(--primary-color-hovor);
 }
 .themeToggleBtn{
+  min-width: 38px;
+  min-height: 40px;
   padding: 0.5rem 0.7rem;
   border-radius: var(--border-radius);
   color: #ffff;
@@ -125,6 +127,7 @@ input, textarea{
   border-radius: 0.7rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--primary-color);
 }
 .editBtn:hover{
   background: #dfdfdf;
@@ -179,7 +182,6 @@ dialog::backdrop{
 .closeDialogBtn:hover i{
   color: #751212;
 }
-
 .formInput{
   margin-bottom: 1.3rem;
 }
@@ -198,6 +200,10 @@ dialog::backdrop{
   color: var(--text-color);
   background: var(--secondary-color);
   transition: border-color 0.2s ease;
+}
+.formTitleInput:focus, .formTextarea:focus{
+  outline: none;
+  border-color: var(--primary-color);
 }
 .formTextarea{
   resize: vertical;
