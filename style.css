@@ -56,7 +56,6 @@ input, textarea{
   border-radius: var(--border-radius);
   background: var(--primary-color);
   color: #ffff;
-
   font-weight: 500;
   transition: all 0.2s ease;
 }
@@ -87,7 +86,8 @@ input, textarea{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1.2fr));
   position: relative;
-  gap:1rem
+  gap:1rem;
+  min-height: 10rem;
 }
 .noteCard:hover{
   transform: scale(1.02);
