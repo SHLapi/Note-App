@@ -163,13 +163,14 @@ dialog{
   inset: 0;
   border: none;
   padding: 2rem;
+  overflow: hidden;
   border-radius: var(--border-radius);
   background: var(--accent-color);
   color: var(--text-color);
 }
 dialog::backdrop{
   background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
 }
 .dialogHeader{
   display: flex;

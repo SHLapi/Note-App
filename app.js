@@ -4,9 +4,11 @@ const contentInput = document.getElementById('noteContent');
 const themeBtn = document.getElementById('themeToggleBtn');
 const addNoteForm = document.getElementById('noteForm');
 const noteContainer = document.getElementById('notesGrid')
-
+//initialing Note value
 let Notes = [];
 let editedNoteId = null ;
+
+//function to Generate Notes Cards
 const generateNotes = ()=>  {
   noteContainer.innerHTML = Notes.map(note => `
     <div class="noteCard">
@@ -18,17 +20,21 @@ const generateNotes = ()=>  {
       </div>
     </div>
     `).join(``)
+    //adding button to create new note
     const addNoteBtns = document.createElement('button')
     addNoteBtns.className = 'addNoteBtn'
     addNoteBtns.textContent = Notes.length === 0? '+ Add Note' : '+ Add New Note'
     addNoteBtns.onclick = () => openDialog()
     noteContainer.appendChild(addNoteBtns)
 }
+//remove note Function handled by delete button on note card
 const removeNote = (noteId) => {
   Notes = Notes.filter(note => note.id != noteId) 
   saveNote();
   generateNotes();
 }
+
+//Function to delete all note
 const clearAllNotes = () => {
   Notes.length === 0? console.log('all cleared')
   :localStorage.removeItem('Notes');
@@ -36,14 +42,13 @@ const clearAllNotes = () => {
   saveNote();
   generateNotes();
 }
-// function to open and close Dialog
 
+//Handle theme button to change theme (Dark or Light)
 themeBtn.addEventListener('click', () => {
   const dark = document.body.classList.toggle('darkTheme');
   localStorage.setItem('Theme', dark? 'dark' : 'light');
 })
-
-// Change theme and save it
+//Save the Theme
 const applyTheme = ()=>{
   if (localStorage.getItem('Theme') === 'dark'){
     document.body.classList.toggle('darkTheme');
@@ -54,9 +59,12 @@ const applyTheme = ()=>{
 const noteId = ()=>{
   return Date.now().toString();
 }
+//store notes in local Storage
 const saveNote = () => {
   localStorage.setItem('Notes', JSON.stringify(Notes));
 }
+
+//Function to Open Dialog (Add new mode & Edit mode)
 const openDialog = (noteId = null) => {
   if (noteId != null){
     document.getElementById('dialogTitle').textContent = 'Edit Note';
@@ -72,9 +80,11 @@ const openDialog = (noteId = null) => {
   }
   dialog.showModal()
 }
+//Function to Close dialog
 const closeDialog = () => {
   dialog.close();
 }
+//Event to submit note form
 addNoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const Title = titleInput.value.trim();
@@ -100,11 +110,14 @@ addNoteForm.addEventListener('submit', (e) => {
   closeDialog();
   generateNotes()
 })
+
+//load Notes stored
 const loadNotes = () => {
   const savedNotes = localStorage.getItem('Notes')
   return savedNotes? JSON.parse(savedNotes):[];
 }
 
+//Event apply when page is reloaded
 document.addEventListener('DOMContentLoaded', ()=> {
   applyTheme();
   Notes = loadNotes();
