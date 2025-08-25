@@ -57,10 +57,27 @@ input, textarea{
   background: var(--primary-color);
   color: #ffff;
   font-weight: 500;
+  margin-left: 10px;
   transition: all 0.2s ease;
 }
 .addNoteBtn:hover{
   background: var(--primary-color-hovor);
+}
+.ClearNotesBtn{
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.ClearNotesBtn:hover{
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--border-radius);
+  border: 1px solid red;
+  color: red;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 .themeToggleBtn{
   min-width: 38px;

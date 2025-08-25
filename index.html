@@ -14,7 +14,8 @@
   <body>
     <header>
       <h1>Note App</h1>
-      <div class="Header-btn">
+      <div class="HeaderBtns">
+        <button type="button" class="ClearNotesBtn" onclick="clearAllNotes()"> Clear All  </button>
         <button type="button" class="addNoteBtn" onclick="openDialog()"> + Add Note </button>
         <button type="button" class="themeToggleBtn" id="themeToggleBtn">🌓</button>
       </div>
@@ -23,22 +24,10 @@
     <main>
       <div class="notesGrid" id="notesGrid">
         <!-- Notes goes Here..  -->
-        
-
-        <!-- <div class="noteCard">
-          <h4 class="noteTitle">Hello</h4>
-          <p class="noteContent"></p>
-          <div class="noteActions">
-            <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-            <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
-          </div>
-        </div> -->
-
-        <!-- remove to here -->
       </div>
       <dialog id="noteDialog">
         <div class="dialogHeader">
-          <h2>Add Note</h2>
+          <h2 id="dialogTitle">Add Note</h2>
           <button type="button" class="closeDialogBtn" onclick="closeDialog()"><i class="fa fa-times"></i></button>
         </div>
         <form id="noteForm">
