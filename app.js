@@ -19,8 +19,8 @@ const generateNotes = ()=>  {
     </div>
     `).join(``)
     const addNoteBtns = document.createElement('button')
-    addNoteBtns.className = 'addNoteBtn Js'
-    addNoteBtns.textContent = '+ Add Another Note'
+    addNoteBtns.className = 'addNoteBtn'
+    addNoteBtns.textContent = Notes.length === 0? '+ Add Note' : '+ Add New Note'
     addNoteBtns.onclick = () => openDialog()
     noteContainer.appendChild(addNoteBtns)
 }
