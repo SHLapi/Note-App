@@ -15,6 +15,7 @@
   --primary-color:#4a6ed1;
   --secondary-color: #1e1f26;
   --accent-color:#2c2f38;
+  --bg-color: #353947;
   --text-color:#f0f0f0;
   --sec-text-color:#b0b1c0;
   --transparent-9: rgba(247, 247, 247, 0.9);
@@ -24,19 +25,23 @@
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
+  font-family: Poppins, sans-serif;
 }
 body{
-  font-family: Poppins, sans-serif;
-  margin: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background: var(--secondary-color);
   color: var(--text-color);
 }
-
+main{
+  flex: 1;
+}
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom:2rem ;
+  margin: 1.5rem ;
 }
 header h1 {
   text-align: center;
@@ -63,7 +68,7 @@ input, textarea{
 .addNoteBtn:hover{
   background: var(--primary-color-hovor);
 }
-.ClearNotesBtn{
+#clearAllBtn{
   padding: 0.6rem 0.8rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--primary-color);
@@ -71,7 +76,7 @@ input, textarea{
   font-weight: 500;
   transition: all 0.2s ease;
 }
-.ClearNotesBtn:hover{
+#clearAllBtn:hover{
   padding: 0.6rem 0.8rem;
   border-radius: var(--border-radius);
   border: 1px solid red;
@@ -105,6 +110,7 @@ input, textarea{
   position: relative;
   gap:1rem;
   min-height: 10rem;
+  margin: 2rem;
 }
 .noteCard:hover{
   transform: scale(1.02);
@@ -185,13 +191,11 @@ dialog::backdrop{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  padding: 0.5rem;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   cursor: pointer;
   color: var(--secondary-text-color);
-  padding: 0.25rem;
   border-radius: 0.25rem;
 }
 .closeDialogBtn:hover{
@@ -230,6 +234,7 @@ dialog::backdrop{
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  margin-top: 1rem;
 }
 .cancelBtn, .saveNoteBtn{
   padding: 0.75rem 1.5rem;
@@ -246,7 +251,59 @@ dialog::backdrop{
   background: var(--accent-color);
   color: rgb(201, 46, 46);
 }
-
-
-
-
+.dialogBody{
+  display: flex;
+  flex-direction: column;
+}
+footer{
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: var(--primary-color);
+  color: white;
+  z-index: 1000;
+  width: 100%;
+}
+.cancelBtn:hover{
+  background: #ff5252;
+  color: white;
+  transform: scale(1.05);
+}
+.AlertCancelBtn{
+  padding: 0.7rem;
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  color: var(--primary-color);
+  transition: all 0.2s ease;
+}
+.AlertCancelBtn:hover{
+  background: var(--primary-color);
+  transform: scale(1.05);
+  color: #fff;
+}
+span{
+  color: rgb(231, 53, 53);
+}
+.alertMsg{
+  color: rgb(238, 89, 89);
+}
+.undoBtn,.redoBtn{
+  padding: 0.6rem;
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  opacity: 1;
+  color: var(--primary-color);
+  margin: 0 0.5rem;
+}
+.undoBtn:disabled,.redoBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.selectedNoteContent{
+  background: var(--bg-color);
+  padding: 1rem;
+  color: #fff;
+  border-radius: var(--border-radius);
+  font-size: large;
+  font-weight: 500;
+}

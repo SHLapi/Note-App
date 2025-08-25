@@ -13,9 +13,11 @@
   </head>
   <body>
     <header>
-      <h1>Note App</h1>
+      <h1>My Notes</h1>
       <div class="HeaderBtns">
-        <button type="button" class="ClearNotesBtn" onclick="clearAllNotes()"> Clear All  </button>
+        <button type="button" class="undoBtn" ><i class="fa fa-undo"></i></button>
+        <button type="button" class="redoBtn" ><i class="fa fa-redo"></i></button>
+        <button type="button" id="clearAllBtn"><i class="fa fa-eraser" aria-hidden="true"></i> Clear All</button>
         <button type="button" class="addNoteBtn" onclick="openDialog()"> + Add Note </button>
         <button type="button" class="themeToggleBtn" id="themeToggleBtn">🌓</button>
       </div>
@@ -34,10 +36,12 @@
           <div class="formInput">
             <label for="noteTitle" class="formLabel">Title</label>
             <input type="text" id="noteTitle" class="formTitleInput" placeholder="Enter a Title" autofocus/>
+            <p class="alertMsg" id="alertTitleMsg"></p>
           </div>
           <div class="formInput">
             <label for="noteContent" class="formLabel">Content</label>
-            <textarea id="noteContent" class="formTextarea" placeholder="Write Your Note .."></textarea> 
+            <textarea id="noteContent" class="formTextarea" placeholder="Write Your Note .."></textarea>
+            <p class="alertMsg" id="alertContentMsg"></p> 
           </div>
           <div class="dialogAction">
             <button type="button" class="cancelBtn" onclick="closeDialog()">Cancel</button>
@@ -45,7 +49,11 @@
           </div>
         </form>
       </dialog>
+      <dialog id="alertDialog"></dialog>
+      <dialog id="dialogCard"></dialog>
     </main>
-    
+    <footer>
+      <p>Made with ❤️ by Abullah Shalabi</p>
+    </footer>
   </body>
 </html>
