@@ -36,10 +36,8 @@ const removeNote = (noteId) => {
 
 //Function to delete all note
 const clearAllNotes = () => {
-  Notes.length === 0? console.log('all cleared')
-  :localStorage.removeItem('Notes');
+  localStorage.removeItem('Notes');
   Notes = [];
-  saveNote();
   generateNotes();
 }
 
