@@ -27,12 +27,10 @@ const saveState = () => {
     updateUndoRedoBtns();
   }
 };
-
 const updateUndoRedoBtns = () => {
     if (undoBtn) undoBtn.disabled = undoStack.length <= 1;
     if (redoBtn) redoBtn.disabled = redoStack.length === 0;
 };
-
 const undo = () => {
   if (undoStack.length > 1) {
     const lastState = undoStack.pop();
@@ -81,8 +79,17 @@ if (clearAllBtn) {
     Alert();
   });
 }
+const clearAllNotes = () => {
+  localStorage.removeItem('Notes');
+  Notes = [];
+  if (alertDialog) {
+    alertDialog.close();
+  }
+  saveState();
+  generateNotes();
+};
 
-// // Function to handle login dialog
+// Function to handle login dialog
 // const login = async (e) => {
 //   e.preventDefault(); 
 //   const username = usernameInput.value;
@@ -112,7 +119,6 @@ if (clearAllBtn) {
 //     alert("An error occurred. Please try again later.");
 //   }
 // };
-
 // if (loginBtn) {
 //   loginBtn.addEventListener('click', () => loginDialog.showModal());
 // }
@@ -120,29 +126,11 @@ if (clearAllBtn) {
 //   loginForm.addEventListener('submit', login);
 // }
 
-const clearAllNotes = () => {
-  saveState();
-  localStorage.removeItem('Notes');
-  Notes = [];
-  if (alertDialog) {
-    alertDialog.close();
-  }
-  generateNotes();
-};
-
-if (themeBtn) {
-  themeBtn.addEventListener('click', () => {
-      const dark = document.body.classList.toggle('darkTheme');
-      localStorage.setItem('Theme', dark ? 'dark' : 'light');
-  });
-}
-
 const applyTheme = () => {
   if (localStorage.getItem('Theme') === 'dark') {
     document.body.classList.add('darkTheme');
   }
 };
-
 const openDialog = (noteId = null) => {
   if (noteId != null) {
     document.getElementById('dialogTitle').textContent = 'Edit Note';
@@ -160,24 +148,18 @@ const openDialog = (noteId = null) => {
   }
   dialog.showModal();
 };
-
 const closeDialog = () => {
   dialog.close();
 };
 const noteId = () => {
   return Date.now().toString();
 };
-
 const saveNote = () => {
   localStorage.setItem('Notes', JSON.stringify(Notes));
 };
-
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
-  addEventListener('click', () => {
-
-  })
-  if (!selectedNote) return;
+  if (!selectedNote) return; 
   dialogCard.innerHTML = `
     <div class="dialogHeader">
       <h1 id="dialogTitle">${selectedNote.title}</h1>
@@ -187,50 +169,45 @@ const showCard = (noteId) => {
   `;
   dialogCard.showModal();
 };
-
 const generateNotes = () => {
   noteContainer.innerHTML = '';
   Notes.forEach(note => {
-      const noteCard = document.createElement('div');
-      noteCard.className = 'noteCard';
-      noteCard.innerHTML = `
-          <h4 class="noteTitle">${note.title}</h4>
-          <p class="noteContent">${note.content}</p>
-          <div class="noteActions">
-              <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-              <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
-          </div>
-      `;
+    const noteCard = document.createElement('div');
+    noteCard.className = 'noteCard';
+    noteCard.innerHTML = `
+      <h4 class="noteTitle">${note.title}</h4>
+      <p class="noteContent">${note.content}</p>
+      <div class="noteActions">
+          <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+          <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
+      </div>
+    `;
 
-      noteCard.addEventListener('click', (e) => {
-          if (e.target.closest('.editBtn') || e.target.closest('.removeNote')) {
-              return;
-          }
-          showCard(note.id);
-      });
+    noteCard.addEventListener('click', (e) => {
+      if (e.target.closest('.editBtn') || e.target.closest('.removeNote')) {
+        return;
+      }
+      showCard(note.id);
+    });
 
-      noteCard.querySelector('.editBtn').addEventListener('click', () => openDialog(note.id));
-      noteCard.querySelector('.removeNote').addEventListener('click', () => removeNote(note.id));
+    noteCard.querySelector('.editBtn').addEventListener('click', () => openDialog(note.id));
+    noteCard.querySelector('.removeNote').addEventListener('click', () => removeNote(note.id));
 
-      noteContainer.appendChild(noteCard);
-  });
-
+    noteContainer.appendChild(noteCard);
+});
   const addNoteBtns = document.createElement('button');
   addNoteBtns.className = 'addNoteBtn floating-btn';
   addNoteBtns.textContent = Notes.length === 0 ? '+ Add Note' : '+ Add New Note';
-  addNoteBtns.onclick = () => openDialog();
-  noteContainer.appendChild(addNoteBtns);
+  addNoteBtns.onclick = () => openDialog(); 
+  noteContainer.appendChild(addNoteBtns); 
   saveState();
 };
-
 const removeNote = (noteId) => {
-  saveState();
   Notes = Notes.filter(note => note.id != noteId);
   saveNote();
   generateNotes();
   saveState();
 };
-
 addNoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const Title = titleInput.value.trim();
@@ -264,13 +241,19 @@ addNoteForm.addEventListener('submit', (e) => {
   closeDialog();
   generateNotes();
 });
-
 const loadNotes = () => {
   const savedNotes = localStorage.getItem('Notes');
   return savedNotes ? JSON.parse(savedNotes) : [];
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (themeBtn) {
+  themeBtn.addEventListener('click', () => {
+      const dark = document.body.classList.toggle('darkTheme');
+      localStorage.setItem('Theme', dark ? 'dark' : 'light');
+      dark? themeBtn.textContent='🌕': themeBtn.innerHTML = `<i class="fa-solid fa-moon"></i>`
+  });
+}
   applyTheme();
   Notes = loadNotes();
   generateNotes();

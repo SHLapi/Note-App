@@ -90,13 +90,14 @@ input, textarea{
   min-height: 40px;
   padding: 0.5rem 0.7rem;
   border-radius: var(--border-radius);
-  color: #ffff;
+  color: var(--text-color);
   border: 2px solid var(--accent-color);
   margin: 0 0 0 0.5rem;
   font-size: large;
 }
 .themeToggleBtn:hover{
   background-color: var(--primary-color);
+  color: #fff;
 }
 .noteCard{
   border-radius: var(--border-radius);
