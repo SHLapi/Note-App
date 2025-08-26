@@ -191,9 +191,6 @@ dialog::-webkit-scrollbar{
 hr{
   margin: 1rem 0;
 }
-a{
-
-}
 .dialogHeader{
   display: flex;
   justify-content: space-between;
@@ -295,9 +292,6 @@ footer{
   transform: scale(1.05);
   color: #fff;
 }
-span{
-  color: rgb(231, 53, 53);
-}
 .alertMsg{
   color: rgb(238, 89, 89);
 }
@@ -320,13 +314,12 @@ span{
   border-radius: var(--border-radius);
   font-size: large;
   font-weight: 600;
+  word-break: break-all;
 }
 dialog .loginForm{
   width: 90vw;
   max-width: 100px;
 }
-
-
 .signupContainer{
   width: 400px;
   display: flex;

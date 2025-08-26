@@ -67,7 +67,7 @@ if (clearAllBtn) {
         `;
       } else {
         alertDialog.innerHTML = `
-          <h3>Are you sure you want to <span>Delete All</span> your Notes?</h3>
+          <h3>Are you sure you want to <span style="color:red">Delete All</span> your Notes?</h3>
           <div class="dialogAction">
               <button type="button" class="AlertCancelBtn" onclick="alertDialog.close()">Cancel</button>
               <button type="button" class="cancelBtn" onclick="clearAllNotes()">Yes</button>
@@ -131,6 +131,13 @@ const applyTheme = () => {
     document.body.classList.add('darkTheme');
   }
 };
+if (themeBtn) {
+  themeBtn.addEventListener('click', () => {
+    const dark = document.body.classList.toggle('darkTheme');
+    localStorage.setItem('Theme', dark ? 'dark' : 'light');
+    dark? themeBtn.textContent='🌕': themeBtn.innerHTML = `<i class="fa-solid fa-moon"></i>`
+  });
+}
 const openDialog = (noteId = null) => {
   if (noteId != null) {
     document.getElementById('dialogTitle').textContent = 'Edit Note';
@@ -179,7 +186,7 @@ const generateNotes = () => {
       <p class="noteContent">${note.content}</p>
       <div class="noteActions">
           <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-          <button type="button" class="removeNote"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          <button type="button" class="removeNote"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
 
@@ -247,13 +254,6 @@ const loadNotes = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (themeBtn) {
-  themeBtn.addEventListener('click', () => {
-      const dark = document.body.classList.toggle('darkTheme');
-      localStorage.setItem('Theme', dark ? 'dark' : 'light');
-      dark? themeBtn.textContent='🌕': themeBtn.innerHTML = `<i class="fa-solid fa-moon"></i>`
-  });
-}
   applyTheme();
   Notes = loadNotes();
   generateNotes();
