@@ -13,11 +13,96 @@ const dialogCard = document.getElementById('dialogCard');
 // const loginDialog = document.getElementById('loginDialog');
 // const loginForm = document.getElementById('loginForm');
 
-
 let Notes = [];
 let editedNoteId = null;
 let undoStack = [];
 let redoStack = [];
+
+
+
+const isLoggedIn = () => {
+  return localStorage.getItem('token') !== null;
+};
+
+const handleLoginState = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    loginBtn.innerHTML = '<i class="fa fa-sign-out"></i> LogOut';
+    loginBtn.onclick = handleLogout;
+    fetchNotes();
+    // Load the theme when the user is logged in
+    const theme = localStorage.getItem('theme');
+    if (theme) {
+      applyTheme(theme);
+    }
+  } else {
+    loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> LogIn';
+    loginBtn.onclick = () => window.location.href = '/index.html';
+    Notes = [];
+    generateNotes();
+    // Fallback to local storage theme if not logged in
+    const theme = localStorage.getItem('theme');
+    if (theme) {
+      applyTheme(theme);
+    } else {
+      applyTheme('light'); // Default theme
+    }
+  }
+};
+
+
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  alert('Logged out successfully!');
+  handleLoginState();
+};
+
+const saveNoteToServer = async (note) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Please log in to save your notes.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/notes/save', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(note)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save note.');
+    }
+    console.log('Note saved successfully!');
+  } catch (err) {
+    console.error(err);
+    alert('An error occurred while saving the note.');
+  }
+};
+
+const fetchNotes = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+    try {
+      const response = await fetch('/api/notes', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        Notes = data.notes;
+        generateNotes();
+      }
+  } catch (err) {
+      console.error('Error fetching notes:', err);
+  }
+};
 
 const saveState = () => {
   const currentState = JSON.stringify(Notes);
@@ -88,56 +173,39 @@ const clearAllNotes = () => {
   saveState();
   generateNotes();
 };
-
-// Function to handle login dialog
-// const login = async (e) => {
-//   e.preventDefault(); 
-//   const username = usernameInput.value;
-//   const password = passwordInput.value;
-
-//   if (!username || !password) {
-//     alert("Please enter a username and password.");
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch('', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ username, password })
-//     });
-
-//     if (response.ok) {
-//       const data = await response.json();
-//       alert("Login successful! Welcome, " + username);
-//       loginDialog.close();
-//     } else {
-//       alert("Login failed. Please check your credentials.");
-//     }
-//   } catch (error) {
-//     console.error('Error during login:', error);
-//     alert("An error occurred. Please try again later.");
-//   }
-// };
-// if (loginBtn) {
-//   loginBtn.addEventListener('click', () => loginDialog.showModal());
-// }
-// if (loginForm) {
-//   loginForm.addEventListener('submit', login);
-// }
-
-const applyTheme = () => {
-  if (localStorage.getItem('Theme') === 'dark') {
-    document.body.classList.add('darkTheme');
+const saveThemeToServer = async (theme) => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+  try {
+    await fetch('/api/auth/theme', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ theme })
+    });
+  } catch (err) {
+    console.error('Error saving theme:', err);
   }
 };
+const handleThemeToggle = () => {
+
+  const currentTheme = document.body.classList.contains('darkTheme') ? 'light' : 'dark';
+  applyTheme(currentTheme);
+  saveThemeToServer(currentTheme);
+};
+const applyTheme = (theme) => {
+    document.body.classList.toggle('darkTheme', theme === 'dark');
+    document.body.classList.toggle('lightTheme', theme === 'light');
+    localStorage.setItem('theme', theme);
+};
 if (themeBtn) {
-  themeBtn.addEventListener('click', () => {
-    const dark = document.body.classList.toggle('darkTheme');
-    localStorage.setItem('Theme', dark ? 'dark' : 'light');
-    dark? themeBtn.textContent='🌕': themeBtn.innerHTML = `<i class="fa-solid fa-moon"></i>`
-  });
+  themeBtn.addEventListener('click', handleThemeToggle());
 }
+
+
+
 const openDialog = (noteId = null) => {
   if (noteId != null) {
     document.getElementById('dialogTitle').textContent = 'Edit Note';
@@ -158,11 +226,16 @@ const openDialog = (noteId = null) => {
 const closeDialog = () => {
   dialog.close();
 };
+
 const noteId = () => {
   return Date.now().toString();
 };
 const saveNote = () => {
-  localStorage.setItem('Notes', JSON.stringify(Notes));
+  if (isLoggedIn()) {
+    saveNoteToServer({ notes: Notes });
+  } else {
+    localStorage.setItem('notes', JSON.stringify(Notes));
+  }
 };
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
@@ -249,13 +322,18 @@ addNoteForm.addEventListener('submit', (e) => {
   generateNotes();
 });
 const loadNotes = () => {
-  const savedNotes = localStorage.getItem('Notes');
-  return savedNotes ? JSON.parse(savedNotes) : [];
+  if (!isLoggedIn()) {
+    const savedNotes = localStorage.getItem('notes');
+    if (savedNotes) {
+      Notes = JSON.parse(savedNotes);
+    }
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme();
-  Notes = loadNotes();
+  loadNotes();
   generateNotes();
   updateUndoRedoBtns();
+  handleLoginState();
 });
