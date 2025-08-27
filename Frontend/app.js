@@ -37,7 +37,7 @@ const handleLoginState = () => {
     }
   } else {
     loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> LogIn';
-    loginBtn.onclick = () => window.location.href = '/index.html';
+    loginBtn.onclick = () => window.location.href = '/login.html';
     Notes = [];
     generateNotes();
     // Fallback to local storage theme if not logged in
@@ -173,15 +173,21 @@ const clearAllNotes = () => {
   saveState();
   generateNotes();
 };
+
+const applyTheme = (theme) => {
+  document.body.className = theme === 'dark' ? 'darkTheme' : '';
+  localStorage.setItem('theme', theme);
+};
 const saveThemeToServer = async (theme) => {
   const token = localStorage.getItem('token');
   if (!token) return;
+
   try {
-    await fetch('/api/auth/theme', {
+    await fetch('http://localhost:5000/api/auth/theme', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
       },
       body: JSON.stringify({ theme })
     });
@@ -190,18 +196,13 @@ const saveThemeToServer = async (theme) => {
   }
 };
 const handleThemeToggle = () => {
-
-  const currentTheme = document.body.classList.contains('darkTheme') ? 'light' : 'dark';
+  const currentTheme = document.body.className === 'darkTheme' ? 'light' : 'dark';
   applyTheme(currentTheme);
   saveThemeToServer(currentTheme);
-};
-const applyTheme = (theme) => {
-    document.body.classList.toggle('darkTheme', theme === 'dark');
-    document.body.classList.toggle('lightTheme', theme === 'light');
-    localStorage.setItem('theme', theme);
-};
+}
+
 if (themeBtn) {
-  themeBtn.addEventListener('click', handleThemeToggle());
+    themeBtn.addEventListener('click', handleThemeToggle);
 }
 
 
@@ -331,7 +332,6 @@ const loadNotes = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  applyTheme();
   loadNotes();
   generateNotes();
   updateUndoRedoBtns();

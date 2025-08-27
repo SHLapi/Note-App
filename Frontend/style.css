@@ -320,28 +320,20 @@ dialog .loginForm{
   width: 90vw;
   max-width: 100px;
 }
-.signupContainer{
-  width: 400px;
+.signupContainer, .signinContainer{
+  width: 30rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   background-color: var(--bg-color);
+  border-radius: var(--border-radius);
   margin: auto;
   padding: 3rem;
 }
-.signupInputs{
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-}
 .signInput{
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  overflow: hidden;
-  border: 2px solid var(--accent-color);
-  color: var(--text-color);
-  transition: border-color 0.2s ease;
+
 }
+
+
+
