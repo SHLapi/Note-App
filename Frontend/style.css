@@ -350,11 +350,15 @@ a:hover{
   border-radius: 0.5rem;
   font-size: 1rem;
   overflow: hidden;
-  border: 2px solid var(--accent-color);
+  border: none;
   color: var(--text-color);
   background: var(--secondary-color);
   transition: border-color 0.2s ease;
   margin-bottom: 1rem;
+}
+.signInput:focus{
+  outline: none;
+  border: 1px solid var(--primary-color);
 }
 
 
