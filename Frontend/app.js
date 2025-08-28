@@ -21,7 +21,6 @@ let redoStack = [];
 const isLoggedIn = () => {
   return localStorage.getItem('token') !== null;
 };
-
 const handleLoginState = () => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -45,13 +44,12 @@ const handleLoginState = () => {
     }
   }
 };
-
-
 const handleLogout = () => {
   localStorage.removeItem('token');
   alert('Logged out successfully!');
   handleLoginState();
 };
+
 
 const saveNoteToServer = async (note) => {
   const token = localStorage.getItem('token');
@@ -59,13 +57,12 @@ const saveNoteToServer = async (note) => {
     alert('Please log in to save your notes.');
     return;
   }
-
   try {
-    const response = await fetch('/api/notes/save', {
+    const response = await fetch('http://localhost:5000/api/notes/save', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(note)
     });
@@ -79,25 +76,46 @@ const saveNoteToServer = async (note) => {
     alert('An error occurred while saving the note.');
   }
 };
-
+const saveNote = () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    localStorage.setItem('Notes', JSON.stringify(Notes))
+  }
+  saveNoteToServer(Notes);
+};
 const fetchNotes = async () => {
   const token = localStorage.getItem('token');
-  if (!token) return;
+  if (!token) {
+    console.error("No token found. Please log in.");
+    return;
+  }
   try {
-    const response = await fetch('/api/notes', {
+    const response = await fetch('http://localhost:5000/api/notes', {
+      method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        'Authorization': `Bearer ${token}`,
+      },
     });
-    if (response.ok) {
-      const data = await response.json();
-      Notes = data.notes;
-      generateNotes();
+    
+    if (response.status === 401) {
+      throw new Error('Unauthorized. Please log in again.');
     }
-} catch (err) {
-    console.error('Error fetching notes:', err);
-}
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes.');
+    }
+
+    const data = await response.json();
+    Notes = data.notes;
+    generateNotes();
+  } catch (error) {
+    console.error('Error fetching notes:', error);
+    if (error.message.includes('Unauthorized')) {
+      localStorage.removeItem('token');
+    }
+  }
 };
+
 
 const saveState = () => {
   const currentState = JSON.stringify(Notes);
@@ -131,9 +149,9 @@ const redo = () => {
     updateUndoRedoBtns();
   }
 };
-
 if (undoBtn) undoBtn.addEventListener('click', undo);
 if (redoBtn) redoBtn.addEventListener('click', redo);
+
 
 if (clearAllBtn) {
   clearAllBtn.addEventListener('click', () => {
@@ -169,6 +187,7 @@ const clearAllNotes = () => {
   generateNotes();
 };
 
+
 const applyTheme = (theme) => {
   document.body.className = theme === 'dark' ? 'darkTheme' : '';
   localStorage.setItem('theme', theme);
@@ -195,11 +214,9 @@ const handleThemeToggle = () => {
   applyTheme(currentTheme);
   saveThemeToServer(currentTheme);
 }
-
 if (themeBtn) {
-    themeBtn.addEventListener('click', handleThemeToggle);
+  themeBtn.addEventListener('click', handleThemeToggle);
 }
-
 
 
 const openDialog = (noteId = null) => {
@@ -223,15 +240,9 @@ const closeDialog = () => {
   dialog.close();
 };
 
+
 const noteId = () => {
   return Date.now().toString();
-};
-const saveNote = () => {
-  if (isLoggedIn()) {
-    saveNoteToServer({ notes: Notes });
-  } else {
-    localStorage.setItem('notes', JSON.stringify(Notes));
-  }
 };
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
