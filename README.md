@@ -29,8 +29,8 @@ Follow these steps to set up and run the project on your local machine.
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/my-notes-app.git
-    cd my-notes-app
+    git clone [https://github.com/SHLapi/Note-App.git]
+    cd Note-App
     ```
 
 2.  **Install server dependencies:**
