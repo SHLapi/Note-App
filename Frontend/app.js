@@ -10,14 +10,182 @@ const undoBtn = document.querySelector('.undoBtn');
 const redoBtn = document.querySelector('.redoBtn');
 const loginBtn = document.querySelector('.loginBtn');
 const dialogCard = document.getElementById('dialogCard');
-// const loginDialog = document.getElementById('loginDialog');
-// const loginForm = document.getElementById('loginForm');
-
 
 let Notes = [];
 let editedNoteId = null;
 let undoStack = [];
 let redoStack = [];
+let isLoggedIn = false;
+
+
+const syncNotes = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return;
+  }
+  
+  try {
+    const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    const response = await fetch('http://localhost:5000/api/notes/', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 401) {
+      throw new Error('Unauthorized. Please log in again.');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes.');
+    }
+
+    const data = await response.json();
+    const serverNotes = data.notes;
+
+    const mergedNotes = [...serverNotes];
+    
+    
+    for (const localNote of localNotes) {
+      if (!mergedNotes.some(serverNote => serverNote.id === localNote.id)) {
+        mergedNotes.push(localNote);
+      }
+    }
+    Notes = mergedNotes;
+    await saveNoteToServer(Notes);
+    localStorage.removeItem('notes');
+    generateNotes();
+  } catch (error) {
+    console.error('Error syncing notes:', error);
+    if (error.message.includes('Unauthorized')) {
+      localStorage.removeItem('token');
+      alert('Session expired. Please log in again.');
+      window.location.href = '/login.html';
+    }
+  }
+};
+
+
+const handleLoginState = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    isLoggedIn = true;
+    loginBtn.innerHTML = '<span style="color:#f76f73"><i class="fa-solid fa-door-open"></i> LogOut</span>';
+    loginBtn.onclick = handleLogout;
+    syncNotes();
+    undoStack = [];
+    redoStack = [];
+    const theme = localStorage.getItem('theme');
+    if (theme) {
+      applyTheme(theme);
+    }
+  } else {
+    isLoggedIn = false;
+    loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> LogIn';
+    loginBtn.onclick = () => window.location.href = '/login.html';
+    loadNotes();
+    generateNotes();
+    const theme = localStorage.getItem('theme');
+    if (theme) {
+      applyTheme(theme);
+    } else {
+      applyTheme('light');
+    }
+  }
+};
+
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  alert('Logged out successfully!');
+  handleLoginState();
+  isLoggedIn = false;
+  Notes = [];
+  undoStack = [];
+  redoStack = [];
+  generateNotes();
+  handleLoginState();
+  window.location.reload();
+};
+
+
+const saveNoteToServer = async (notes) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await fetch('http://localhost:5000/api/notes/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ notes })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save notes.');
+    }
+    console.log('Notes saved successfully!');
+    // Corrected line: only remove the 'notes' from local storage
+    localStorage.removeItem('notes');
+  } catch (err) {
+    console.error('Error saving notes:', err);
+    // Handle specific errors like 401 Unauthorized
+    if (err.message.includes('Unauthorized')) {
+      localStorage.removeItem('token');
+      alert('Session expired. Please log in again.');
+      window.location.href = '/login.html';
+    } else {
+      alert('An error occurred while saving the note.');
+    }
+  }
+};
+const saveNote = () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    localStorage.setItem('notes', JSON.stringify(Notes))
+  }else{saveNoteToServer(Notes);}
+  
+};
+const fetchNotes = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.error("No token found. Please log in.");
+    return;
+  }
+  try {
+    const response = await fetch('http://localhost:5000/api/notes/', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 401) {
+      throw new Error('Unauthorized. Please log in again. Or Check token');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes.');
+    }
+
+    const data = await response.json();
+    Notes = data.notes;
+    generateNotes();
+  } catch (error) {
+    console.error('Error fetching notes:', error);
+    if (error.message.includes('Unauthorized')) {
+      localStorage.removeItem('token');
+    }
+  }
+};
+
+const loadNotes = () => {
+  const savedNotes = localStorage.getItem('notes');
+  if (savedNotes) {
+    Notes = JSON.parse(savedNotes);
+  }
+};
+
 
 const saveState = () => {
   const currentState = JSON.stringify(Notes);
@@ -51,10 +219,19 @@ const redo = () => {
     updateUndoRedoBtns();
   }
 };
-
 if (undoBtn) undoBtn.addEventListener('click', undo);
 if (redoBtn) redoBtn.addEventListener('click', redo);
 
+
+const clearAllNotes = () => {
+  localStorage.removeItem('notes');
+  Notes = [];
+  if (alertDialog) {
+    alertDialog.close();
+  }
+  saveState();
+  generateNotes();
+};
 if (clearAllBtn) {
   clearAllBtn.addEventListener('click', () => {
     const Alert = () => {
@@ -79,65 +256,46 @@ if (clearAllBtn) {
     Alert();
   });
 }
-const clearAllNotes = () => {
-  localStorage.removeItem('Notes');
-  Notes = [];
-  if (alertDialog) {
-    alertDialog.close();
-  }
-  saveState();
-  generateNotes();
+
+
+const applyTheme = (theme) => {
+  document.body.className = theme === 'dark' ? 'darkTheme' : '';
+  localStorage.setItem('theme', theme);
 };
 
-// Function to handle login dialog
-// const login = async (e) => {
-//   e.preventDefault(); 
-//   const username = usernameInput.value;
-//   const password = passwordInput.value;
+const saveThemeToServer = async (theme) => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
 
-//   if (!username || !password) {
-//     alert("Please enter a username and password.");
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch('', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ username, password })
-//     });
-
-//     if (response.ok) {
-//       const data = await response.json();
-//       alert("Login successful! Welcome, " + username);
-//       loginDialog.close();
-//     } else {
-//       alert("Login failed. Please check your credentials.");
-//     }
-//   } catch (error) {
-//     console.error('Error during login:', error);
-//     alert("An error occurred. Please try again later.");
-//   }
-// };
-// if (loginBtn) {
-//   loginBtn.addEventListener('click', () => loginDialog.showModal());
-// }
-// if (loginForm) {
-//   loginForm.addEventListener('submit', login);
-// }
-
-const applyTheme = () => {
-  if (localStorage.getItem('Theme') === 'dark') {
-    document.body.classList.add('darkTheme');
+  try {
+    await fetch('http://localhost:5000/api/auth/theme', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ theme })
+    });
+  } catch (err) {
+    console.error('Error saving theme:', err);
   }
 };
-if (themeBtn) {
-  themeBtn.addEventListener('click', () => {
-    const dark = document.body.classList.toggle('darkTheme');
-    localStorage.setItem('Theme', dark ? 'dark' : 'light');
-    dark? themeBtn.textContent='🌕': themeBtn.innerHTML = `<i class="fa-solid fa-moon"></i>`
-  });
+
+const handleThemeToggle = () => {
+  const currentTheme = document.body.className === 'darkTheme' ? 'light' : 'dark';
+  applyTheme(currentTheme);
+  saveThemeToServer(currentTheme);
 }
+if (themeBtn) {
+  themeBtn.addEventListener('click', handleThemeToggle);
+}
+
+
+const noteId = () => {
+  return Date.now().toString();
+};
+
+
 const openDialog = (noteId = null) => {
   if (noteId != null) {
     document.getElementById('dialogTitle').textContent = 'Edit Note';
@@ -158,12 +316,8 @@ const openDialog = (noteId = null) => {
 const closeDialog = () => {
   dialog.close();
 };
-const noteId = () => {
-  return Date.now().toString();
-};
-const saveNote = () => {
-  localStorage.setItem('Notes', JSON.stringify(Notes));
-};
+
+
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
   if (!selectedNote) return; 
@@ -175,6 +329,12 @@ const showCard = (noteId) => {
     <p class="selectedNoteContent">${selectedNote.content}</p>
   `;
   dialogCard.showModal();
+};
+const removeNote = (noteId) => {
+  Notes = Notes.filter(note => note.id != noteId);
+  saveNote();
+  generateNotes();
+  saveState();
 };
 const generateNotes = () => {
   noteContainer.innerHTML = '';
@@ -207,12 +367,6 @@ const generateNotes = () => {
   addNoteBtns.textContent = Notes.length === 0 ? '+ Add Note' : '+ Add New Note';
   addNoteBtns.onclick = () => openDialog(); 
   noteContainer.appendChild(addNoteBtns); 
-  saveState();
-};
-const removeNote = (noteId) => {
-  Notes = Notes.filter(note => note.id != noteId);
-  saveNote();
-  generateNotes();
   saveState();
 };
 addNoteForm.addEventListener('submit', (e) => {
@@ -248,14 +402,11 @@ addNoteForm.addEventListener('submit', (e) => {
   closeDialog();
   generateNotes();
 });
-const loadNotes = () => {
-  const savedNotes = localStorage.getItem('Notes');
-  return savedNotes ? JSON.parse(savedNotes) : [];
-};
 
 document.addEventListener('DOMContentLoaded', () => {
-  applyTheme();
-  Notes = loadNotes();
+  loadNotes();
   generateNotes();
   updateUndoRedoBtns();
+  handleLoginState();
+
 });
