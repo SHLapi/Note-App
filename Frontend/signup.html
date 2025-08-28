@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body class="darkTheme">
+    <div class="signupContainer">
+      <h1>Sign Up</h1>
+      <form id="signupForm">
+        <div class="formInput">
+          <label for="username">Username</label>
+          <input type="text" id="username" class="signInput" required>
+
+          <label for="Email">Email</label>
+          <input type="email" id="Email" class="signInput" required>
+
+          <label for="password">Password</label>
+          <input type="password" id="password" class="signInput" required>
+        </div>
+        <button type="submit" class="signBtn">Sign Up</button>
+      </form>
+      <br/>
+      <p>Already have an account? <a href="./login.html"> Login</a></p>
+      <p class="alertMsg" id="alertMsg"></p>
+    </div>
+    <script src="signup.js"></script>
+  </body>
+</html>

@@ -7,9 +7,9 @@
     <meta name="keywords" content="notes">
     <meta name="author" content="Abdullah Shalabi">
     <title>My Note App</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/c90d939867.js" crossorigin="anonymous"></script>
-    <script src="/app.js" defer></script>
+    <script src="app.js" defer></script>
   </head>
   <body>
     <header>
@@ -18,8 +18,8 @@
         <button type="button" class="undoBtn" ><i class="fa fa-undo"></i></button>
         <button type="button" class="redoBtn" ><i class="fa fa-redo"></i></button>
         <button type="button" id="clearAllBtn"><i class="fa fa-eraser" aria-hidden="true"></i> Clear All</button>
+        <button type="button" class="loginBtn"><i class="fa fa-sign-in" aria-hidden="true"></i> logIn </button>
         <button type="button" class="themeToggleBtn" id="themeToggleBtn">🌓</button>
-        <!-- <button type="button" class="loginBtn"><i class="fa fa-sign-in" aria-hidden="true"></i> logIn </button> -->
       </div>
     </header>
 
@@ -51,29 +51,6 @@
       </dialog>
       <dialog id="alertDialog"></dialog>
       <dialog id="dialogCard"></dialog>
-      <!-- <dialog id="loginDialog">
-        <div class="dialogHeader">
-          <h2>Login</h2>
-          <button type="button" class="closeDialogBtn" onclick="loginDialog.close()"><i class="fa fa-times"></i></button>
-        </div>
-        <form id="loginForm">
-          <div class="formInput">
-            <label for="usernameInput" class="formLabel">Username</label>
-            <input type="user" id="usernameInput" class="formTitleInput" placeholder="Enter your username" autofocus required/>
-            <p class="alertMsg" id="alertUsernameMsg"></p> 
-          </div>
-          <div class="formInput">
-            <label for="passwordInput" class="formLabel">Password</label>
-            <input type="password" id="passwordInput" class="formTitleInput" placeholder="Enter your password" required/>
-            <p class="alertMsg" id="alertPasswordMsg"></p> 
-          </div>
-          <hr/>
-          <p>don't Have an Account ? <a href="/signUp.html">Sign Up</a>  </p>
-          <div class="dialogAction">
-            <button type="submit" class="saveNoteBtn" id="loginSubmitBtn">Login</button>
-          </div>
-        </form>
-    </dialog> -->
     </main>
     <footer>
       <p>Made with ❤️ by Abullah Shalabi</p>
