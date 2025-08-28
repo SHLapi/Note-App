@@ -10,7 +10,7 @@ const jwtSecret = process.env.JWT;
 router.post('/signup', async (req, res) => {
     const { firstname, lastname, username, email, password } = req.body;
     try {
-        let user = new User({ firstname, lastname, username, email, password, notes: [], theme: 'light' }); // Set default theme to 'light'
+        let user = new User({ firstname, lastname, username, email, password, notes: [], theme: 'dark' });
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
