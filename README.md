@@ -76,5 +76,5 @@ Follow these steps to set up and run the project on your local machine.
 
 ### Contact 📧
 
-  * **Your Name**: Abdullah Shalabi
+  * **Name**: Abdullah Shalabi
   * **Email**: [abdullahshalabi.95@gmail.com]
