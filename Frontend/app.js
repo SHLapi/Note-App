@@ -1,4 +1,3 @@
-// app.js
 const dialog = document.getElementById('noteDialog');
 const titleInput = document.getElementById('noteTitle');
 const contentInput = document.getElementById('noteContent');
@@ -24,7 +23,7 @@ const handleLoginState = () => {
   const token = localStorage.getItem('token');
   if (token) {
     isLoggedIn = true;
-    loginBtn.innerHTML = '<i class="fa fa-sign-out"></i> LogOut';
+    loginBtn.innerHTML = '<span style="color:#f76f73"><i class="fa-solid fa-door-open"></i> LogOut</span>';
     loginBtn.onclick = handleLogout;
     fetchNotes();
     const theme = localStorage.getItem('theme');
@@ -96,7 +95,7 @@ const fetchNotes = async () => {
     return;
   }
   try {
-    const response = await fetch('http://localhost:5000/api/notes', {
+    const response = await fetch('http://localhost:5000/api/notes/', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -104,7 +103,7 @@ const fetchNotes = async () => {
     });
     
     if (response.status === 401) {
-      throw new Error('Unauthorized. Please log in again.');
+      throw new Error('Unauthorized. Please log in again. Or Check token');
     }
 
     if (!response.ok) {
@@ -179,6 +178,15 @@ if (undoBtn) undoBtn.addEventListener('click', undo);
 if (redoBtn) redoBtn.addEventListener('click', redo);
 
 
+const clearAllNotes = () => {
+  localStorage.removeItem('notes');
+  Notes = [];
+  if (alertDialog) {
+    alertDialog.close();
+  }
+  saveState();
+  generateNotes();
+};
 if (clearAllBtn) {
   clearAllBtn.addEventListener('click', () => {
     const Alert = () => {
@@ -203,15 +211,6 @@ if (clearAllBtn) {
     Alert();
   });
 }
-const clearAllNotes = () => {
-  localStorage.removeItem('notes');
-  Notes = [];
-  if (alertDialog) {
-    alertDialog.close();
-  }
-  saveState();
-  generateNotes();
-};
 
 
 const applyTheme = (theme) => {
@@ -247,6 +246,11 @@ if (themeBtn) {
 }
 
 
+const noteId = () => {
+  return Date.now().toString();
+};
+
+
 const openDialog = (noteId = null) => {
   if (noteId != null) {
     document.getElementById('dialogTitle').textContent = 'Edit Note';
@@ -269,9 +273,6 @@ const closeDialog = () => {
 };
 
 
-const noteId = () => {
-  return Date.now().toString();
-};
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
   if (!selectedNote) return; 
@@ -283,6 +284,12 @@ const showCard = (noteId) => {
     <p class="selectedNoteContent">${selectedNote.content}</p>
   `;
   dialogCard.showModal();
+};
+const removeNote = (noteId) => {
+  Notes = Notes.filter(note => note.id != noteId);
+  saveNote();
+  generateNotes();
+  saveState();
 };
 const generateNotes = () => {
   noteContainer.innerHTML = '';
@@ -315,12 +322,6 @@ const generateNotes = () => {
   addNoteBtns.textContent = Notes.length === 0 ? '+ Add Note' : '+ Add New Note';
   addNoteBtns.onclick = () => openDialog(); 
   noteContainer.appendChild(addNoteBtns); 
-  saveState();
-};
-const removeNote = (noteId) => {
-  Notes = Notes.filter(note => note.id != noteId);
-  saveNote();
-  generateNotes();
   saveState();
 };
 addNoteForm.addEventListener('submit', (e) => {
