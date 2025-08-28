@@ -18,6 +18,54 @@ let redoStack = [];
 let isLoggedIn = false;
 
 
+const syncNotes = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return;
+  }
+  
+  try {
+    const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    const response = await fetch('http://localhost:5000/api/notes/', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 401) {
+      throw new Error('Unauthorized. Please log in again.');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes.');
+    }
+
+    const data = await response.json();
+    const serverNotes = data.notes;
+
+    const mergedNotes = [...serverNotes];
+    
+    
+    for (const localNote of localNotes) {
+      if (!mergedNotes.some(serverNote => serverNote.id === localNote.id)) {
+        mergedNotes.push(localNote);
+      }
+    }
+    Notes = mergedNotes;
+    await saveNoteToServer(Notes);
+    localStorage.removeItem('notes');
+    generateNotes();
+  } catch (error) {
+    console.error('Error syncing notes:', error);
+    if (error.message.includes('Unauthorized')) {
+      localStorage.removeItem('token');
+      alert('Session expired. Please log in again.');
+      window.location.href = '/login.html';
+    }
+  }
+};
+
 
 const handleLoginState = () => {
   const token = localStorage.getItem('token');
@@ -25,7 +73,9 @@ const handleLoginState = () => {
     isLoggedIn = true;
     loginBtn.innerHTML = '<span style="color:#f76f73"><i class="fa-solid fa-door-open"></i> LogOut</span>';
     loginBtn.onclick = handleLogout;
-    fetchNotes();
+    syncNotes();
+    undoStack = [];
+    redoStack = [];
     const theme = localStorage.getItem('theme');
     if (theme) {
       applyTheme(theme);
@@ -34,7 +84,7 @@ const handleLoginState = () => {
     isLoggedIn = false;
     loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> LogIn';
     loginBtn.onclick = () => window.location.href = '/login.html';
-    loadNotes(); // Load notes from local storage
+    loadNotes();
     generateNotes();
     const theme = localStorage.getItem('theme');
     if (theme) {
@@ -44,10 +94,18 @@ const handleLoginState = () => {
     }
   }
 };
+
 const handleLogout = () => {
   localStorage.removeItem('token');
   alert('Logged out successfully!');
   handleLoginState();
+  isLoggedIn = false;
+  Notes = [];
+  undoStack = [];
+  redoStack = [];
+  generateNotes();
+  handleLoginState();
+  window.location.reload();
 };
 
 
@@ -101,7 +159,7 @@ const fetchNotes = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+
     if (response.status === 401) {
       throw new Error('Unauthorized. Please log in again. Or Check token');
     }
@@ -111,21 +169,7 @@ const fetchNotes = async () => {
     }
 
     const data = await response.json();
-    const serverNotes = data.notes;
-    
-    const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
-    
-    if (localNotes.length > 0) {
-      // Merge local notes with server notes, ensuring no duplicates
-      const mergedNotes = [...serverNotes, ...localNotes.filter(
-        localNote => !serverNotes.some(serverNote => serverNote.id === localNote.id)
-      )];
-      Notes = mergedNotes;
-      await saveNoteToServer(mergedNotes); // Save merged notes to the server
-    } else {
-      Notes = serverNotes;
-    }
-
+    Notes = data.notes;
     generateNotes();
   } catch (error) {
     console.error('Error fetching notes:', error);
@@ -134,6 +178,7 @@ const fetchNotes = async () => {
     }
   }
 };
+
 const loadNotes = () => {
   const savedNotes = localStorage.getItem('notes');
   if (savedNotes) {

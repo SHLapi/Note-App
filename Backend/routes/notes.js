@@ -4,13 +4,31 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 
-// Save notes route
-router.post('/save', async (req, res) => {
+const jwtSecret = process.env.JWT;
+
+const auth = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user);
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, jwtSecret);
+    const user = await User.findOne({ _id: decoded.userId });
+
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      throw new Error();
     }
+
+    req.token = token;
+    req.user = user;
+    next();
+  } catch (e) {
+    res.status(401).json({ error: 'Please authenticate.' });
+  }
+};
+
+
+// Save notes route
+router.post('/save', auth, async (req, res) => {
+  try {
+    const user = req.user;
     user.notes = req.body.notes;
     await user.save();
     res.status(200).json({ message: 'Notes saved successfully' });
@@ -21,9 +39,9 @@ router.post('/save', async (req, res) => {
 });
 
 // Fetch notes route
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user);
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
