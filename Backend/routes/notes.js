@@ -7,17 +7,22 @@ const jwtSecret = process.env.JWT;
 
 // Middleware to protect routes
 const auth = (req, res, next) => {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    if (!token) {
-        return res.status(401).json({ error: 'No token, authorization denied' });
+  try {
+    const authHeader = req.header('Authorization');
+    
+    // Check if the Authorization header exists and has the correct format
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'No token, authorization denied' });
     }
-    try {
-        const decoded = jwt.verify(token, jwtSecret);
-        req.user = decoded.userId;
-        next();
-    } catch (e) {
-        res.status(401).json({ error: 'Token is not valid' });
-    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const decoded = jwt.verify(token, jwtSecret);
+    req.user = decoded.userId;
+    next();
+  } catch (e) {
+    // This catch block now handles errors from jwt.verify and the initial checks
+    res.status(401).json({ error: 'Token is not valid' });
+  }
 };
 
 // Save notes route
@@ -41,7 +46,7 @@ router.get('/', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user);
     if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
     res.status(200).json({ notes: user.notes });
   } catch (err) {

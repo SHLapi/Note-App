@@ -1,3 +1,4 @@
+// app.js
 const dialog = document.getElementById('noteDialog');
 const titleInput = document.getElementById('noteTitle');
 const contentInput = document.getElementById('noteContent');
@@ -15,15 +16,14 @@ let Notes = [];
 let editedNoteId = null;
 let undoStack = [];
 let redoStack = [];
+let isLoggedIn = false;
 
 
 
-const isLoggedIn = () => {
-  return localStorage.getItem('token') !== null;
-};
 const handleLoginState = () => {
   const token = localStorage.getItem('token');
   if (token) {
+    isLoggedIn = true;
     loginBtn.innerHTML = '<i class="fa fa-sign-out"></i> LogOut';
     loginBtn.onclick = handleLogout;
     fetchNotes();
@@ -32,9 +32,10 @@ const handleLoginState = () => {
       applyTheme(theme);
     }
   } else {
+    isLoggedIn = false;
     loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> LogIn';
     loginBtn.onclick = () => window.location.href = '/login.html';
-    Notes = [];
+    loadNotes(); // Load notes from local storage
     generateNotes();
     const theme = localStorage.getItem('theme');
     if (theme) {
@@ -51,12 +52,8 @@ const handleLogout = () => {
 };
 
 
-const saveNoteToServer = async (note) => {
+const saveNoteToServer = async (notes) => {
   const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Please log in to save your notes.');
-    return;
-  }
   try {
     const response = await fetch('http://localhost:5000/api/notes/save', {
       method: 'POST',
@@ -64,24 +61,33 @@ const saveNoteToServer = async (note) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(note)
+      body: JSON.stringify({ notes })
     });
 
     if (!response.ok) {
-      throw new Error('Failed to save note.');
+      throw new Error('Failed to save notes.');
     }
-    console.log('Note saved successfully!');
+    console.log('Notes saved successfully!');
+    // Corrected line: only remove the 'notes' from local storage
+    localStorage.removeItem('notes');
   } catch (err) {
-    console.error(err);
-    alert('An error occurred while saving the note.');
+    console.error('Error saving notes:', err);
+    // Handle specific errors like 401 Unauthorized
+    if (err.message.includes('Unauthorized')) {
+      localStorage.removeItem('token');
+      alert('Session expired. Please log in again.');
+      window.location.href = '/login.html';
+    } else {
+      alert('An error occurred while saving the note.');
+    }
   }
 };
 const saveNote = () => {
   const token = localStorage.getItem('token');
   if (!token) {
-    localStorage.setItem('Notes', JSON.stringify(Notes))
-  }
-  saveNoteToServer(Notes);
+    localStorage.setItem('notes', JSON.stringify(Notes))
+  }else{saveNoteToServer(Notes);}
+  
 };
 const fetchNotes = async () => {
   const token = localStorage.getItem('token');
@@ -106,13 +112,33 @@ const fetchNotes = async () => {
     }
 
     const data = await response.json();
-    Notes = data.notes;
+    const serverNotes = data.notes;
+    
+    const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    
+    if (localNotes.length > 0) {
+      // Merge local notes with server notes, ensuring no duplicates
+      const mergedNotes = [...serverNotes, ...localNotes.filter(
+        localNote => !serverNotes.some(serverNote => serverNote.id === localNote.id)
+      )];
+      Notes = mergedNotes;
+      await saveNoteToServer(mergedNotes); // Save merged notes to the server
+    } else {
+      Notes = serverNotes;
+    }
+
     generateNotes();
   } catch (error) {
     console.error('Error fetching notes:', error);
     if (error.message.includes('Unauthorized')) {
       localStorage.removeItem('token');
     }
+  }
+};
+const loadNotes = () => {
+  const savedNotes = localStorage.getItem('notes');
+  if (savedNotes) {
+    Notes = JSON.parse(savedNotes);
   }
 };
 
@@ -178,7 +204,7 @@ if (clearAllBtn) {
   });
 }
 const clearAllNotes = () => {
-  localStorage.removeItem('Notes');
+  localStorage.removeItem('notes');
   Notes = [];
   if (alertDialog) {
     alertDialog.close();
@@ -192,6 +218,7 @@ const applyTheme = (theme) => {
   document.body.className = theme === 'dark' ? 'darkTheme' : '';
   localStorage.setItem('theme', theme);
 };
+
 const saveThemeToServer = async (theme) => {
   const token = localStorage.getItem('token');
   if (!token) return;
@@ -200,8 +227,8 @@ const saveThemeToServer = async (theme) => {
     await fetch('http://localhost:5000/api/auth/theme', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ theme })
     });
@@ -209,6 +236,7 @@ const saveThemeToServer = async (theme) => {
     console.error('Error saving theme:', err);
   }
 };
+
 const handleThemeToggle = () => {
   const currentTheme = document.body.className === 'darkTheme' ? 'light' : 'dark';
   applyTheme(currentTheme);
@@ -328,18 +356,11 @@ addNoteForm.addEventListener('submit', (e) => {
   closeDialog();
   generateNotes();
 });
-const loadNotes = () => {
-  if (!isLoggedIn()) {
-    const savedNotes = localStorage.getItem('notes');
-    if (savedNotes) {
-      Notes = JSON.parse(savedNotes);
-    }
-  }
-};
 
 document.addEventListener('DOMContentLoaded', () => {
   loadNotes();
   generateNotes();
   updateUndoRedoBtns();
   handleLoginState();
+
 });

@@ -8,9 +8,9 @@ const jwtSecret = process.env.JWT;
 
 // Sign-up Route
 router.post('/signup', async (req, res) => {
-    const { firstname, lastname, username, email, password } = req.body;
+    const { username, email, password } = req.body;
     try {
-        let user = new User({ firstname, lastname, username, email, password, notes: [], theme: 'dark' });
+        let user = new User({ username, email, password, notes: [], theme: 'dark' });
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
@@ -23,12 +23,12 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (!user) {
-        return res.status(400).json({ error: 'Invalid credentials' });
+        return res.status(400).json({ error: 'Username not Registered' });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-        return res.status(400).json({ error: 'Invalid credentials' });
+        return res.status(400).json({ error: 'Username or Password is not Correct' });
     }
 
     // Generate a JWT

@@ -20,7 +20,7 @@ loginForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             localStorage.setItem('token', data.token);
             localStorage.setItem('theme', data.theme);
-            window.location.href = './index.html'; // Redirect to the index page
+            window.location.href = './index.html'; 
         } else {
             alertMSG.textContent = data.error ;
         }
