@@ -55,7 +55,7 @@ Follow these steps to set up and run the project on your local machine.
 1.  Start the server from the project's root directory:
 
     ```bash
-    node server.js
+    node backend/server.js
     ```
 
     The server will start on `http://localhost:5000`.
