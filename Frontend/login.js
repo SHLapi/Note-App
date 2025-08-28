@@ -1,4 +1,4 @@
-const loginForm = document.getElementById('signipForm'); // Corrected ID
+const loginForm = document.getElementById('loginForm'); 
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
 const alertMSG = document.getElementById('alertMsg');
