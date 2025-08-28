@@ -8,15 +8,6 @@ const NoteSchema = new mongoose.Schema({
 });
 
 const UserSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   firstname: {
     type: String,
     required: true,
@@ -25,16 +16,25 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   password: {
     type: String,
     required: true,
   },
-  
   notes: [NoteSchema],
   theme: {
     type: String,
     enum: ['light', 'dark'],
-    default: 'light',
+    default: 'dark',
   },
 });
 

@@ -1,6 +1,7 @@
-const loginForm = document.getElementById('loginForm');
+const loginForm = document.getElementById('signipForm'); // Corrected ID
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
+const alertMSG = document.getElementById('alertMsg');
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -8,7 +9,7 @@ loginForm.addEventListener('submit', async (e) => {
     const password = passwordInput.value;
 
     try {
-        const response = await fetch(`${process.env.API_URL}/api/auth/login`, {
+        const response = await fetch(`http://localhost:5000/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -19,9 +20,9 @@ loginForm.addEventListener('submit', async (e) => {
         if (response.ok) {
             localStorage.setItem('token', data.token);
             localStorage.setItem('theme', data.theme);
-            window.location.href = '/index.html'; // Redirect to the index page
+            window.location.href = './index.html'; // Redirect to the index page
         } else {
-            alert(data.error);
+            alertMSG.textContent = data.error ;
         }
     } catch (err) {
         console.error('Login error:', err);

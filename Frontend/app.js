@@ -10,8 +10,6 @@ const undoBtn = document.querySelector('.undoBtn');
 const redoBtn = document.querySelector('.redoBtn');
 const loginBtn = document.querySelector('.loginBtn');
 const dialogCard = document.getElementById('dialogCard');
-// const loginDialog = document.getElementById('loginDialog');
-// const loginForm = document.getElementById('loginForm');
 
 let Notes = [];
 let editedNoteId = null;
@@ -30,7 +28,6 @@ const handleLoginState = () => {
     loginBtn.innerHTML = '<i class="fa fa-sign-out"></i> LogOut';
     loginBtn.onclick = handleLogout;
     fetchNotes();
-    // Load the theme when the user is logged in
     const theme = localStorage.getItem('theme');
     if (theme) {
       applyTheme(theme);
@@ -40,12 +37,11 @@ const handleLoginState = () => {
     loginBtn.onclick = () => window.location.href = '/login.html';
     Notes = [];
     generateNotes();
-    // Fallback to local storage theme if not logged in
     const theme = localStorage.getItem('theme');
     if (theme) {
       applyTheme(theme);
     } else {
-      applyTheme('light'); // Default theme
+      applyTheme('light');
     }
   }
 };
@@ -87,21 +83,20 @@ const saveNoteToServer = async (note) => {
 const fetchNotes = async () => {
   const token = localStorage.getItem('token');
   if (!token) return;
-
-    try {
-      const response = await fetch('/api/notes', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        Notes = data.notes;
-        generateNotes();
+  try {
+    const response = await fetch('/api/notes', {
+      headers: {
+        'Authorization': `Bearer ${token}`
       }
-  } catch (err) {
-      console.error('Error fetching notes:', err);
-  }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      Notes = data.notes;
+      generateNotes();
+    }
+} catch (err) {
+    console.error('Error fetching notes:', err);
+}
 };
 
 const saveState = () => {

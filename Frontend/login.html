@@ -5,20 +5,23 @@
     <title>Log In</title>
     <link rel="stylesheet" href="/style.css">
   </head>
-  <body>
+  <body class="darkTheme">
     <div class="signinContainer">
       <h2>Log In</h2>
-      <form id="signipForm">
+      <form id="loginForm">
         <div class="formInput">
           <label for="username">Username</label>
-          <input type="text" id="username" class="signInput" required>
+          <input type="text" id="username" class="signInput" autocomplete="username" required>
         </div>
         <div class="formInput">
           <label for="password">Password</label>
-          <input type="password" id="password" class="signInput" required>
+          <input type="password" id="password" class="signInput" autocomplete="current-password" required>
         </div>
-        <button type="submit" class="saveNoteBtn">log In</button>
+        <button type="submit" class="signBtn">log In</button>
+        <p class="alertMsg" id="alertMsg"></p>
       </form>
+      <br/>
+      <p>Don't have an account? <a href="./signup.html"> Sign Up</a></p>
     </div>
   </body>
 </html>

@@ -23,7 +23,7 @@ app.use('/api/auth', authRoutes);
 // Serve static front-end files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Explicitly serve login.html for the root URL
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'login.html'));
 });

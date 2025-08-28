@@ -3,14 +3,14 @@ const router = express.Router();
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-// A dummy secret for JWT. In a real app, use a long, random string from a .env file.
+
 const jwtSecret = process.env.JWT;
 
 // Sign-up Route
 router.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
+    const { firstname, lastname, username, email, password } = req.body;
     try {
-        let user = new User({ username, password, notes: [] });
+        let user = new User({ firstname, lastname, username, email, password, notes: [], theme: 'light' }); // Set default theme to 'light'
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
@@ -36,9 +36,7 @@ router.post('/login', async (req, res) => {
     res.json({ message: 'Login successful', token , theme: user.theme});
 });
 
-
-
-
+// Theme update route
 router.post('/theme', async (req, res) => {
     const { theme } = req.body;
     const token = req.headers.authorization.split(' ')[1];

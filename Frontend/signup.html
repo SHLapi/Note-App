@@ -5,23 +5,32 @@
     <title>Sign Up</title>
     <link rel="stylesheet" href="/style.css">
   </head>
-  <body>
+  <body class="darkTheme">
     <div class="signupContainer">
       <h2>Sign Up</h2>
       <form id="signupForm">
         <div class="formInput">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname" class="signInput" required>
+
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname" class="signInput" required>
+
           <label for="username">Username</label>
           <input type="text" id="username" class="signInput" required>
-        </div>
-        <div class="formInput">
+
+          <label for="Email">Email</label>
+          <input type="email" id="Email" class="signInput" required>
+
           <label for="password">Password</label>
           <input type="password" id="password" class="signInput" required>
         </div>
-        <button type="submit" class="saveNoteBtn">Sign Up</button>
+        <button type="submit" class="signBtn">Sign Up</button>
       </form>
-      <hr/>
-      <p>Already have an account? <a href="/index.html">Login</a></p>
+      <br/>
+      <p>Already have an account? <a href="./login.html"> Login</a></p>
     </div>
+    <p class="alertMsg" id="alertMsg"></p>
     <script src="signup.js"></script>
   </body>
 </html>
