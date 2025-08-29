@@ -71,7 +71,7 @@ const handleLoginState = () => {
   const token = localStorage.getItem('token');
   if (token) {
     isLoggedIn = true;
-    loginBtn.innerHTML = '<span style="color:#f76f73"><i class="fa-solid fa-door-open"></i> LogOut</span>';
+    loginBtn.innerHTML = '<span style="color:#f76f73"><i class="fa-solid fa-door-open"></i></span>';
     loginBtn.onclick = handleLogout;
     syncNotes();
     undoStack = [];
@@ -252,7 +252,7 @@ if (clearAllBtn) {
         `;
       }
     };
-    alertDialog.showModal();
+    alertDialog.show();
     Alert();
   });
 }
@@ -408,5 +408,4 @@ document.addEventListener('DOMContentLoaded', () => {
   generateNotes();
   updateUndoRedoBtns();
   handleLoginState();
-
 });
