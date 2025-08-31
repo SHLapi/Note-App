@@ -1,6 +1,5 @@
 const dialog = document.getElementById('noteDialog');
 const titleInput = document.getElementById('noteTitle');
-const contentInput = document.getElementById('noteContent');
 const themeBtn = document.getElementById('themeToggleBtn');
 const addNoteForm = document.getElementById('noteForm');
 const noteContainer = document.getElementById('notesGrid');
@@ -16,6 +15,34 @@ let editedNoteId = null;
 let undoStack = [];
 let redoStack = [];
 let isLoggedIn = false;
+let quill; 
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],
+  [{ 'header': 1 }, { 'header': 2 }],             
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+  [{ 'script': 'super' }],
+  // [{ 'indent': '-1'}, { 'indent': '+1' }],   
+  [{ 'direction': 'rtl' }],
+  [{ 'size': ['small', false, 'large', 'huge'] }], 
+  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+  [{ 'color': [] }, { 'background': [] }],
+  [{ 'align': [] }],
+  ['clean']                                        
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  quill = new Quill('#noteContent', {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions,
+    },
+    placeholder: 'Write your note content here...',
+    });
+  loadNotes();
+  generateNotes();
+  updateUndoRedoBtns();
+  handleLoginState();
+});
 
 
 const syncNotes = async () => {
@@ -302,12 +329,12 @@ const openDialog = (noteId = null) => {
     const editedNote = Notes.find(note => note.id == noteId);
     editedNoteId = noteId;
     titleInput.value = editedNote.title;
-    contentInput.value = editedNote.content;
+    quill.root.innerHTML = editedNote.content;
   } else {
     document.getElementById('dialogTitle').textContent = 'Add Note';
     editedNoteId = null;
     titleInput.value = '';
-    contentInput.value = '';
+    quill.root.innerHTML = '';
     document.getElementById('alertTitleMsg').textContent = '';
     document.getElementById('alertContentMsg').textContent = '';
   }
@@ -321,13 +348,14 @@ const closeDialog = () => {
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
   if (!selectedNote) return; 
+  // const wrappedContent = `<div class="noteContentWrapper">${selectedNote.content}</div>`;
   dialogCard.innerHTML = `
-    <div class="dialogHeader">
-      <h1 id="dialogTitle">${selectedNote.title}</h1>
-      <button type="button" class="closeDialogBtn" onclick="dialogCard.close()"><i class="fa fa-times"></i></button>
-    </div>
-    <p class="selectedNoteContent">${selectedNote.content}</p>
-  `;
+  <div class="dialogHeader">
+  <h1 id="dialogTitle">${selectedNote.title}</h1>
+  <button type="button" class="closeDialogBtn" onclick="dialogCard.close()"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="selectedNoteContent">${selectedNote.content}</div>
+  `
   dialogCard.showModal();
 };
 const removeNote = (noteId) => {
@@ -343,13 +371,13 @@ const generateNotes = () => {
     noteCard.className = 'noteCard';
     noteCard.innerHTML = `
       <h4 class="noteTitle">${note.title}</h4>
-      <p class="noteContent">${note.content}</p>
+      
       <div class="noteActions">
           <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
           <button type="button" class="removeNote"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
-
+    {/* <p class="noteContent"  >${note.content}</p> */}
     noteCard.addEventListener('click', (e) => {
       if (e.target.closest('.editBtn') || e.target.closest('.removeNote')) {
         return;
@@ -372,15 +400,16 @@ const generateNotes = () => {
 addNoteForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const Title = titleInput.value.trim();
-  const Content = contentInput.value;
+  const Content = quill.root.innerHTML;
   const alertTitleMsg = document.getElementById('alertTitleMsg');
   const alertContentMsg = document.getElementById('alertContentMsg');
-
-  if (Title === '') {
-      return (alertTitleMsg.textContent = 'Please Add your Note Title!');
+  alertContentMsg.textContent = '';
+  alertTitleMsg.textContent = '';
+  if (Title == '' ) {
+    return (alertTitleMsg.textContent = 'Please add a title to your note!');
   }
-  if (Content === '') {
-      return (alertContentMsg.textContent = 'Please Add Content to your note!');
+  if (Content == '<p><br></p>' || Content.trim() === '') {
+    return (alertContentMsg.textContent = 'Please add a content to your note!');
   }
   saveState();
   if (editedNoteId) {
@@ -403,9 +432,4 @@ addNoteForm.addEventListener('submit', (e) => {
   generateNotes();
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadNotes();
-  generateNotes();
-  updateUndoRedoBtns();
-  handleLoginState();
-});
+

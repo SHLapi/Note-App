@@ -9,6 +9,7 @@
     <title>My Note App</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/c90d939867.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
     <script src="app.js" defer></script>
   </head>
   <body>
@@ -39,8 +40,8 @@
             <p class="alertMsg" id="alertTitleMsg"></p>
           </div>
           <div class="formInput">
-            <label for="noteContent" class="formLabel">Content</label>
-            <textarea id="noteContent" class="formTextarea" placeholder="Write Your Note .."></textarea>
+            <p class="formLabel">Content</p>
+            <div id="noteContent" class="editorContainer"></div>
             <p class="alertMsg" id="alertContentMsg"></p> 
           </div>
           <div class="dialogAction">
@@ -55,5 +56,6 @@
     <footer>
       <p>Made with ❤️ by Abullah Shalabi</p>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
   </body>
 </html>
