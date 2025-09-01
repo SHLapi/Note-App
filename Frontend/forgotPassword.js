@@ -18,12 +18,12 @@ forgotPasswordForm.addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (response.ok) {
-      alertMSG.textContent = 'Password reset link sent to your email.';
+      window.alert('Password reset link sent to your email.') ;
     } else {
       alertMSG.textContent = data.error;
     }
   } catch (err) {
     console.error('Error:', err);
-    alertMSG.textContent = 'An error occurred. Please try again.';
+    window.alert('An error occurred. Please try again.');
   }
 });
