@@ -63,6 +63,18 @@ button:hover{
 input, .editorContainer{
   font: inherit;
 }
+a{
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  padding: 0.4rem 0.8rem;
+  text-decoration: none;
+}
+p{
+  margin: 0.6rem 0 ;
+}
+a:hover{
+  background-color: var(--primary-color);
+}
 .addNoteBtn, .loginBtn {
   padding: 0.6rem 0.8rem;
   border-radius: var(--border-radius);
@@ -347,39 +359,16 @@ dialog .loginForm{
   width: 90vw;
   max-width: 100px;
 }
-.signupContainer, .signinContainer{
-  position: relative;
-  width: 30rem;
+.signContainer{
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 30rem;
   flex-direction: column;
   background-color: var(--bg-color);
   border-radius: var(--border-radius);
   margin: auto;
   padding: 3rem;
-}
-.backHome{
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  text-decoration: none;
-  color: var(--text-color);
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-a{
-  /* border:0.5px solid var(--primary-color); */
-  color: var(--text-color);
-  border-radius: var(--border-radius);
-  padding: 0.4rem 0.8rem;
-  text-decoration: none;
-}
-p{
-  margin: 0.6rem 0 ;
-}
-a:hover{
-  background-color: var(--primary-color);
 }
 .signInput{
   width: 100%;
@@ -510,4 +499,18 @@ a:hover{
   position: static;
   font-size: 0.8rem;
   font-style: normal;
+}
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  margin: auto !important;
+  padding: 3rem;
+}
+.backHome{
+  width: fit-content;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--primary-color);
 }
