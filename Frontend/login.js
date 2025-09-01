@@ -1,18 +1,22 @@
 const loginForm = document.getElementById('loginForm'); 
-const usernameInput = document.getElementById('username');
+const identifierInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
 const alertMSG = document.getElementById('alertMsg');
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = usernameInput.value;
+    const identifier = identifierInput.value.trim();
     const password = passwordInput.value;
-
+    if (!identifier || !password) {
+        alertMSG.textContent = 'Please fill in all fields.';
+        return;
+    }
+    
     try {
         const response = await fetch(`http://localhost:5000/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ identifier, password })
         });
 
         const data = await response.json();

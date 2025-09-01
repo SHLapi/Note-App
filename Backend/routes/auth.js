@@ -102,8 +102,15 @@ router.get('/verify/:token', async (req, res) => {
 
 // Login Route
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const { identifier, password } = req.body;
+    if (!identifier || !password) {
+        return res.status(400).json({ error: 'Identifier (username or email) and password are required' });
+    }
+
+    const user = await User.findOne({ 
+        $or: [{ username: identifier },{ email: identifier.toLowerCase() }
+        ]
+    });
     if (!user) {
         return res.status(400).json({ error: 'Username not Registered' });
     }
