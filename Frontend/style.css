@@ -360,6 +360,9 @@ a{
   padding: 0.4rem 0.8rem;
   text-decoration: none;
 }
+p{
+  margin: 0.6rem 0 ;
+}
 a:hover{
   background-color: var(--primary-color);
 }

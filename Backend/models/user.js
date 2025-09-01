@@ -33,6 +33,13 @@ const UserSchema = new mongoose.Schema({
     enum: ['light', 'dark'],
     default: 'dark',
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: String,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 // Hash the password before saving
@@ -86,6 +93,19 @@ UserSchema.methods.getDecryptedNotes = function() {
 UserSchema.methods.comparePassword = function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
+// Generate verification token
+UserSchema.methods.generateVerificationToken = function() {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+// Generate password reset token
+UserSchema.methods.generateResetPasswordToken = function() {
+  const token = crypto.randomBytes(32).toString('hex');
+  this.resetPasswordToken = token;
+  this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+  return token;
+};
+
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;

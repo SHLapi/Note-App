@@ -3,9 +3,14 @@ const alertMSG = document.getElementById('alertMsg');
 
 signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const username = document.getElementById('username').value;
+  const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
-  const email = document.getElementById('Email').value;
+  const email = document.getElementById('Email').value.trim();
+
+  if (!username || !email || !password) {
+    alertMSG.textContent = 'Please fill in all fields';
+    return;
+  }
 
   try {
     const response = await fetch(`http://localhost:5000/api/auth/signup`, {
@@ -14,15 +19,18 @@ signupForm.addEventListener('submit', async (e) => {
       body: JSON.stringify({ username, email, password })
     });
 
+    const data = await response.json();
+
     if (response.ok) {
-      alert('Sign up successful! You can now log in.');
-      window.location.href = '/login.html';
+      alertMSG.textContent = 'Sign up successful! Please check your email to verify.';
+      setTimeout(() => {
+        window.location.href = '/login.html';
+      }, 2000);
     } else {
-      const error = await response.json();
-      alertMSG.textContent = error.error;
+      alertMSG.textContent = data.error || 'Signup failed. Please try again.';
     }
   } catch (err) {
     console.error('Error during sign-up:', err);
-    alert('An error occurred. Please try again.');
+    alertMSG.textContent = 'An error occurred. Please try again.';
   }
 });
