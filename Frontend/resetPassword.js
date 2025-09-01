@@ -1,7 +1,7 @@
 const resetPasswordForm = document.getElementById('resetPasswordForm');
 const passwordInput = document.getElementById('password');
 const alertMSG = document.getElementById('alertMsg');
-
+const API_URL ='http://localhost:5000';
 resetPasswordForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const password = passwordInput.value;
@@ -9,7 +9,7 @@ resetPasswordForm.addEventListener('submit', async (e) => {
   const token = urlParams.get('token');
 
   try {
-    const response = await fetch(`http://localhost:5000/api/auth/resetPassword/${token}`, {
+    const response = await fetch(`${API_URL}/api/auth/resetPassword/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password })

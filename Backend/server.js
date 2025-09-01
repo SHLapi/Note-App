@@ -35,4 +35,4 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'login.html'));
 });
 
-app.listen(PORT, () => console.log(`Server running on localhost:${PORT} `));
+app.listen(PORT, () => console.log(`Server running on ${process.env.API_URL} `));

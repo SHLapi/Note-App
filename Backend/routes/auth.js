@@ -66,7 +66,7 @@ router.post('/signup', async (req, res) => {
         await user.save();
 
         // Send verification email
-        const verificationUrl = `http://localhost:5000/api/auth/verify/${user.verificationToken}`;
+        const verificationUrl = `${process.env.API_URL}/api/auth/verify/${user.verificationToken}`;
         await transporter.sendMail({
             to: email,
             subject: 'Verify Your Email',
@@ -138,7 +138,7 @@ router.post('/forgot-password', async (req, res) => {
         }
         const resetToken = user.generateResetPasswordToken();
         await user.save();
-        const resetUrl = `http://localhost:5000/reset-password.html?token=${resetToken}`;
+        const resetUrl = `${process.env.API_URL}/reset-password.html?token=${resetToken}`;
         await transporter.sendMail({
             to: email,
             subject: 'Reset Your Password',

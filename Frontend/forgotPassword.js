@@ -1,13 +1,13 @@
 const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 const emailInput = document.getElementById('email');
 const alertMSG = document.getElementById('alertMsg');
-
+const API_URL = 'http://localhost:5000';
 forgotPasswordForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = emailInput.value;
 
   try {
-    const response = await fetch(`http://localhost:5000/api/auth/forgot-password`, {
+    const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })

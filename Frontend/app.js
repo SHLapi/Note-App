@@ -9,7 +9,7 @@ const undoBtn = document.querySelector('.undoBtn');
 const redoBtn = document.querySelector('.redoBtn');
 const loginBtn = document.querySelector('.loginBtn');
 const dialogCard = document.getElementById('dialogCard');
-
+const API_URL = 'http://localhost:5000';
 let Notes = [];
 let editedNoteId = null;
 let undoStack = [];
@@ -53,7 +53,7 @@ const syncNotes = async () => {
   
   try {
     const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
-    const response = await fetch('http://localhost:5000/api/notes/', {
+    const response = await fetch(`${API_URL}/api/notes/`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -139,7 +139,7 @@ const handleLogout = () => {
 const saveNoteToServer = async (notes) => {
   const token = localStorage.getItem('token');
   try {
-    const response = await fetch('http://localhost:5000/api/notes/save', {
+    const response = await fetch(`${API_URL}/api/notes/save`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ const fetchNotes = async () => {
     return;
   }
   try {
-    const response = await fetch('http://localhost:5000/api/notes/', {
+    const response = await fetch(`${API_URL}/api/notes/`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -295,7 +295,7 @@ const saveThemeToServer = async (theme) => {
   if (!token) return;
 
   try {
-    await fetch('http://localhost:5000/api/auth/theme', {
+    await fetch(`${API_URL}/api/auth/theme1`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
