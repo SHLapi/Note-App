@@ -189,6 +189,10 @@ input, .editorContainer{
 dialog{
   max-width: 400px;
 }
+dialog::backdrop{
+  background: rgba(15, 15, 15, 0.1);
+  backdrop-filter: blur(4px);
+}
 :modal{
   max-width: 800px;
   max-height: 80vh; 
@@ -198,6 +202,7 @@ dialog{
   background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(4px);
 }
+
 :modal::-webkit-scrollbar{
   width: 1px;
 } 
@@ -343,6 +348,7 @@ dialog .loginForm{
   max-width: 100px;
 }
 .signupContainer, .signinContainer{
+  position: relative;
   width: 30rem;
   display: flex;
   justify-content: center;
@@ -352,6 +358,15 @@ dialog .loginForm{
   border-radius: var(--border-radius);
   margin: auto;
   padding: 3rem;
+}
+.backHome{
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 a{
   /* border:0.5px solid var(--primary-color); */
@@ -470,4 +485,29 @@ a:hover{
 .ql-editor.ql-blank{
   padding: 0px !important;
   color: var(--sec-text-color) !important;
+}
+.passInput{
+  position: relative;
+}
+.togglePassword{
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  cursor: pointer;
+  color: var(--primary-color);
+  user-select: none;
+  transform: translateY(-30%);
+}
+.noteCreated{
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  color: var(--sec-text-color);
+  font-style: italic;
+}
+.noteCreatedDialog{
+  position: static;
+  font-size: 0.8rem;
+  font-style: normal;
 }

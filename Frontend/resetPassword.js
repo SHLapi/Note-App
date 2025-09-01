@@ -2,6 +2,18 @@ const resetPasswordForm = document.getElementById('resetPasswordForm');
 const passwordInput = document.getElementById('password');
 const alertMSG = document.getElementById('alertMsg');
 const API_URL ='http://localhost:5000';
+
+// show password toggle 
+togglePassword.addEventListener('click', () => {
+  const passwordField = document.getElementById('password');
+  const icon = togglePassword.querySelector('i');
+  if (!icon) return;
+  const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordField.setAttribute('type', type);
+  icon.classList.toggle('fa-eye');
+  icon.classList.toggle('fa-eye-slash');
+});
+
 resetPasswordForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const password = passwordInput.value;

@@ -1,7 +1,23 @@
 const signupForm = document.getElementById('signupForm');
 const alertMSG = document.getElementById('alertMsg');
 const API_URL = 'http://localhost:5000';
+const togglePassword = document.getElementById('togglePassword');
 
+
+
+// show password toggle 
+togglePassword.addEventListener('click', () => {
+  const passwordField = document.getElementById('password');
+  const icon = togglePassword.querySelector('i');
+  if (!icon) return; 
+  const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordField.setAttribute('type', type);
+  icon.classList.toggle('fa-eye');
+  icon.classList.toggle('fa-eye-slash');
+});
+
+
+// Sign-up form submission
 signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const username = document.getElementById('username').value.trim();

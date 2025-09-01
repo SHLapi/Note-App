@@ -11,17 +11,18 @@
       <form id="signupForm">
         <div class="formInput">
           <label for="username">Username</label>
-          <input type="text" id="username" class="signInput" required>
+          <input type="text" id="username" class="signInput" placeholder="Enter your username" >
 
           <label for="Email">Email</label>
-          <input type="email" id="Email" class="signInput" required>
-
-          <label for="password">Password</label>
-          <input type="password" id="password" class="signInput" placeholder="Enter your password" required>
+          <input type="email" id="Email" class="signInput" placeholder="Enter your email" >
+          <div class="passInput">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="signInput" placeholder="Enter your password" >
+            <span id="togglePassword" class="togglePassword"><i class="fa fa-eye"></i></span>
+          </div>
         </div>
         <button type="submit" class="signBtn">Sign Up</button>
       </form>
-      <br/>
       <p class="alertMsg" id="alertMsg"></p>
       <p>Already have an account? <a href="./login.html"> Login</a></p>
     </div>

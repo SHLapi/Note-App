@@ -138,7 +138,7 @@ router.post('/forgot-password', async (req, res) => {
         }
         const resetToken = user.generateResetPasswordToken();
         await user.save();
-        const resetUrl = `${process.env.API_URL}/reset-password.html?token=${resetToken}`;
+        const resetUrl = `${process.env.API_URL}/resetPassword.html?token=${resetToken}`;
         await transporter.sendMail({
             to: email,
             subject: 'Reset Your Password',

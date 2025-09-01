@@ -348,13 +348,14 @@ const closeDialog = () => {
 const showCard = (noteId) => {
   const selectedNote = Notes.find(note => note.id == noteId);
   if (!selectedNote) return; 
-  // const wrappedContent = `<div class="noteContentWrapper">${selectedNote.content}</div>`;
   dialogCard.innerHTML = `
   <div class="dialogHeader">
-  <h1 id="dialogTitle">${selectedNote.title}</h1>
-  <button type="button" class="closeDialogBtn" onclick="dialogCard.close()"><i class="fa fa-times"></i></button>
-  </div>
-  <div class="selectedNoteContent">${selectedNote.content}</div>
+    <h3 id="dialogTitle">${selectedNote.title}</h3>
+    <button type="button" class="closeDialogBtn" onclick="dialogCard.close()"><i class="fa fa-times"></i></button>
+    </div>
+    <p class="noteCreatedDialog" >${selectedNote.created}</p>
+  <hr/>
+    <div class="selectedNoteContent">${selectedNote.content}</div>
   `
   dialogCard.showModal();
 };
@@ -371,13 +372,12 @@ const generateNotes = () => {
     noteCard.className = 'noteCard';
     noteCard.innerHTML = `
       <h4 class="noteTitle">${note.title}</h4>
-      
       <div class="noteActions">
           <button type="button" class="editBtn"><i class="fa fa-pencil" aria-hidden="true"></i></button>
           <button type="button" class="removeNote"><i class="fa-solid fa-trash"></i></button>
       </div>
+      <p class="noteCreated">${note.created}</p>
     `;
-    {/* <p class="noteContent"  >${note.content}</p> */}
     noteCard.addEventListener('click', (e) => {
       if (e.target.closest('.editBtn') || e.target.closest('.removeNote')) {
         return;
@@ -420,10 +420,13 @@ addNoteForm.addEventListener('submit', (e) => {
       content: Content,
     };
   } else {
+    const date = new Date().toLocaleDateString('en-GB');
+    const time = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
     Notes.push({
       id: noteId(),
       title: Title,
       content: Content,
+      created: `${date} - ${time}`,
     });
   }
 

@@ -10,6 +10,7 @@ const NoteSchema = new mongoose.Schema({
   id: String,
   title: String,
   content: String,
+  created: String,
 });
 
 const UserSchema = new mongoose.Schema({
@@ -84,6 +85,7 @@ UserSchema.methods.getDecryptedNotes = function() {
       id: note.id,
       title: note.title,
       content: decryptedContent,
+      created: note.created,
     });
   }
   return decryptedNotes;

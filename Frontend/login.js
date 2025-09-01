@@ -36,6 +36,18 @@ loginForm.addEventListener('submit', async (e) => {
     }
 });
 
+// show password toggle 
+togglePassword.addEventListener('click', () => {
+    const passwordField = document.getElementById('password');
+    const icon = togglePassword.querySelector('i');
+    if (!icon) return; 
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+});
+
+
 // Check for verification or reset success message in URL
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('verified')) {
