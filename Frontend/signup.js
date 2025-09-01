@@ -39,10 +39,10 @@ signupForm.addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (response.ok) {
-      alertMSG.textContent = 'Sign up successful! Please check your email to verify.';
+      window.alert('Sign up successful! Please check your email to verify.');
       setTimeout(() => {
         window.location.href = '/login.html';
-      }, 2000);
+      }, 1000);
     } else {
       alertMSG.textContent = data.error || 'Signup failed. Please try again.';
     }

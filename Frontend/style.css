@@ -75,6 +75,13 @@ p{
 a:hover{
   background-color: var(--primary-color);
 }
+input:is(::-webkit-autofill, :autofill,){
+  background-color: var(--secondary-color) !important;
+  -webkit-text-fill-color: var(--text-color) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  border: 1px solid var(--primary-color) !important;
+
+}
 .addNoteBtn, .loginBtn {
   padding: 0.6rem 0.8rem;
   border-radius: var(--border-radius);

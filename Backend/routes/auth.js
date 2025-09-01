@@ -25,14 +25,12 @@ router.post('/signup', async (req, res) => {
     if (!username || !email || !password) {
         return res.status(400).json({ error: 'All fields (username, email, password) are required' });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
-    }
-    if (password.length < 6) {
-        return res.status(400).json({ error: 'Password must be at least 6 characters long' });
-    }
+    // Username validations
     if (username.length < 3) {
         return res.status(400).json({ error: 'Username must be at least 3 characters long' });
+    }
+    if (username.length > 20) {
+        return res.status(400).json({ error: 'Username cannot exceed 20 characters' });
     }
     if (/\s/.test(username)) {
         return res.status(400).json({ error: 'Username cannot contain spaces' });
@@ -40,8 +38,36 @@ router.post('/signup', async (req, res) => {
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
         return res.status(400).json({ error: 'Username can only contain letters, numbers, and underscores' });
     }
-    if (username.toLowerCase() === 'admin' || username.toLowerCase() === 'user') {
+    if (['admin', 'user', 'root', 'system'].includes(username.toLowerCase())) {
         return res.status(400).json({ error: 'This username is reserved. Please choose another one.' });
+    }
+
+    // Email validations
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+    }
+    if (email.length > 100) {
+        return res.status(400).json({ error: 'Email cannot exceed 100 characters' });
+    }
+
+    // Password validations
+    if (password.length < 8) {
+        return res.status(400).json({ error: 'Password must be at least 8 characters long ' });
+    }
+    if (password.length > 50) {
+        return res.status(400).json({ error: 'Password cannot exceed 50 characters' });
+    }
+    if (!/[A-Z]/.test(password)) {
+        return res.status(400).json({ error: 'Password must contain at least one uppercase letter' });
+    }
+    if (!/[a-z]/.test(password)) {
+        return res.status(400).json({ error: 'Password must contain at least one lowercase letter' });
+    }
+    if (!/[0-9]/.test(password)) {
+        return res.status(400).json({ error: 'Password must contain at least one number' });
+    }
+    if (!/[^A-Za-z0-9]/.test(password)) {
+        return res.status(400).json({ error: 'Password must contain at least one special character' });
     }
     if (password.toLowerCase().includes(username.toLowerCase()) || username.toLowerCase().includes(password.toLowerCase())) {
         return res.status(400).json({ error: 'Password should not contain the username' });
@@ -49,9 +75,14 @@ router.post('/signup', async (req, res) => {
 
 
     // Check for existing user
-    const existingUser = await User.findOne({ $or: [{ username }, { email: email.toLowerCase() }] });
+    const existingUser = await User.findOne({ 
+        $or: [
+            { username: { $regex: `^${username}$`, $options: 'i' } }, 
+            { email: email.toLowerCase() }
+        ]
+    });
     if (existingUser) {
-        if (existingUser.username === username) {
+        if (existingUser.username.toLowerCase() === username.toLowerCase()) {
             return res.status(400).json({ error: 'Username already exists' });
         }
         if (existingUser.email === email.toLowerCase()) {
