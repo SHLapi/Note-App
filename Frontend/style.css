@@ -323,7 +323,7 @@ footer{
   opacity: 0.5;
   cursor: not-allowed;
 }
-.undoBtn:not(.undoBtn:disabled):hover,.redoBtn:is(.redoBtn:disabled):hover{
+.undoBtn:not(.undoBtn:disabled):hover,.redoBtn:not(.redoBtn:disabled):hover{
   background: var(--primary-color);
   color: #fff;
 }

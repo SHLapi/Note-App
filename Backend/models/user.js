@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+
+const algorithm = 'aes-256-cbc';
+const key = crypto.createHash('sha256').update(process.env.CRYPTO_SECRET).digest();
+
 
 const NoteSchema = new mongoose.Schema({
   id: String,
@@ -38,7 +43,46 @@ UserSchema.pre('save', async function(next) {
   next();
 });
 
+// Encrypt Notes Content 
+UserSchema.pre('save', function(next) {
+  if (!this.isModified('notes')) return next();
+  for (let note of this.notes) {
+    if (note.content) {
+      const iv = crypto.randomBytes(16);
+      const cipher = crypto.createCipheriv(algorithm, key, iv);
+      const encrypted = Buffer.concat([cipher.update(note.content), cipher.final()]);
+      note.content = iv.toString('hex') + ':' + encrypted.toString('hex');
+    }
+  }
+  next();
+});
 
+UserSchema.methods.getDecryptedNotes = function() {
+  const decryptedNotes = [];
+  for (let note of this.notes) {
+    let decryptedContent = '';
+    if (note.content) {
+      const [ivHex, encryptedHex] = note.content.split(':');
+      if (ivHex && encryptedHex) {
+        const iv = Buffer.from(ivHex, 'hex');
+        const encrypted = Buffer.from(encryptedHex, 'hex');
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+        decryptedContent = decrypted.toString('utf8');
+      } else {
+        decryptedContent = note.content; 
+      }
+    }
+    decryptedNotes.push({
+      id: note.id,
+      title: note.title,
+      content: decryptedContent,
+    });
+  }
+  return decryptedNotes;
+}
+
+// Method to compare password
 UserSchema.methods.comparePassword = function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
