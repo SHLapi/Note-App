@@ -8,9 +8,9 @@ const key = crypto.createHash('sha256').update(process.env.CRYPTO_SECRET).digest
 
 const NoteSchema = new mongoose.Schema({
   id: String,
-  title: String,
-  content: String,
-  created: String,
+  title: {type: String, required: true, },
+  content: {type: String, required: true, },
+  created: {type: String, required: true, },
 });
 
 const UserSchema = new mongoose.Schema({
@@ -18,11 +18,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    minlength: 3,
+    maxlength: 30,
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    match: /^\S+@\S+\.\S+$/,
+    maxlength: 100,
   },
   password: {
     type: String,
@@ -95,6 +99,7 @@ UserSchema.methods.getDecryptedNotes = function() {
 UserSchema.methods.comparePassword = function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
+
 // Generate verification token
 UserSchema.methods.generateVerificationToken = function() {
   return crypto.randomBytes(32).toString('hex');
@@ -107,7 +112,6 @@ UserSchema.methods.generateResetPasswordToken = function() {
   this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
   return token;
 };
-
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;

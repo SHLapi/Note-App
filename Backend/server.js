@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+
 dotenv.config();
 const notesRoutes = require('./routes/notes');
 

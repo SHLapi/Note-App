@@ -30,7 +30,7 @@ const toolbarOptions = [
   ['clean']                                        
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
+const loadQuill = () => {
   quill = new Quill('#noteContent', {
     theme: 'snow',
     modules: {
@@ -38,19 +38,19 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     placeholder: 'Write your note content here...',
     });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadQuill();
   loadNotes();
   generateNotes();
   updateUndoRedoBtns();
   handleLoginState();
 });
 
-
 const syncNotes = async () => {
   const token = localStorage.getItem('token');
-  if (!token) {
-    return;
-  }
-  
+  if (!token) {return}
   try {
     const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
     const response = await fetch(`${API_URL}/api/notes/`, {
