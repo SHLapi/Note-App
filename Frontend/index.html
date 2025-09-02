@@ -7,14 +7,19 @@
     <meta name="keywords" content="notes">
     <meta name="author" content="Abdullah Shalabi">
     <title>My Note App</title>
+    <link rel="icon" type="image/x-icon" href="./public/NoteApp-logo.png">
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/c90d939867.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
     <script src="app.js" defer></script>
+    <script> window.API_URL = 'http://localhost:5000';</script>
   </head>
   <body>
     <header>
-      <h1>My Notes</h1>
+      <div class="logoWrapper">
+        <img src="./public/NoteApp-logo.png" alt="Note App Logo" class="logo"/>
+        <h1>My Notes</h1>
+      </div>
       <div class="HeaderBtns">
         <button type="button" class="undoBtn" ><i class="fa fa-undo"></i></button>
         <button type="button" class="redoBtn" ><i class="fa fa-redo"></i></button>
@@ -36,7 +41,7 @@
         <form id="noteForm">
           <div class="formInput">
             <label for="noteTitle" class="formLabel">Title</label>
-            <input type="text" id="noteTitle" class="formTitleInput" placeholder="Enter a Title" autofocus/>
+            <input type="text" id="noteTitle" class="formTitleInput" placeholder="Enter a Title" maxlength="60" autofocus/>
             <p class="alertMsg" id="alertTitleMsg"></p>
           </div>
           <div class="formInput">

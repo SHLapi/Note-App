@@ -82,6 +82,18 @@ input:is(::-webkit-autofill, :autofill,){
   border: 1px solid var(--primary-color) !important;
 
 }
+.logoWrapper{
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.logo{
+  height: 40px;
+  width: 40px;
+  margin-right: 10px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
 .addNoteBtn, .loginBtn {
   padding: 0.6rem 0.8rem;
   border-radius: var(--border-radius);
